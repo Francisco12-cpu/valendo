@@ -13,6 +13,12 @@ const ROTAS = {
   '/vitrine': () => import('./ui/screens/vitrine.js'),
   '/buzzer': () => import('./ui/screens/buzzer.js'),
   '/buzzer/jogar': () => import('./ui/screens/buzzer-jogo.js'),
+  '/placar': () => import('./ui/screens/placar.js'),
+  '/sorteio': () => import('./ui/screens/sorteio.js'),
+  '/cronometro': () => import('./ui/screens/cronometro.js'),
+  '/equipes': () => import('./ui/screens/equipes.js'),
+  '/turmas': () => import('./ui/screens/turmas.js'),
+  '/ferramentas': () => import('./ui/screens/ferramentas.js'),
 };
 const naoEncontrado = () => import('./ui/screens/nao-encontrado.js');
 

@@ -5,7 +5,7 @@ import { h, svg } from '../dom.js';
 import { t } from '../../i18n/i18n.js';
 import { criarBuzzer, ESTADOS } from '../../core/buzzer.js';
 import { agora, formatarMs } from '../../core/clock.js';
-import { lerAjustes, ajustesPadrao, normalizarAjustes, montarJogadores } from '../buzzer-ajustes.js';
+import { lerAjustes, ajustesPadrao, normalizarAjustes, montarJogadores, rotuloTecla } from '../buzzer-ajustes.js';
 import { sons, desbloquear, definirMudo } from '../../audio/sons.js';
 import { abrirModal } from '../components/modal.js';
 import { ativarAfundar } from '../components/botao.js';
@@ -50,10 +50,11 @@ export function render(alvo, params) {
     const nome = h('span', { class: 'area__nome' }, j.nome);
     const status = h('span', { class: 'area__status' });
     const detalhe = h('span', { class: 'area__detalhe' });
+    const tecla = ajustes.teclado ? h('span', { class: 'area__tecla' }, t('buzzer.tecla'), ' ', h('kbd', null, rotuloTecla(j.tecla))) : null;
     const el = h(
       'div',
       { class: 'area', 'data-id': j.id, style: { '--cor': j.cor }, role: 'group', 'aria-label': t('buzzer.areaDe', { nome: j.nome }) },
-      h('div', { class: 'area__conteudo' }, nome, status, detalhe)
+      h('div', { class: 'area__conteudo' }, nome, status, detalhe, tecla)
     );
     return { j, el, status, detalhe };
   });
@@ -314,7 +315,25 @@ export function render(alvo, params) {
   raiz.addEventListener('contextmenu', semMenu);
 
   // ---------- Teclado: Espaço = largada/recomeçar, F = tela cheia, Esc = sair ----------
+  // Método D: cada jogador tem uma tecla (ou botão de clicker). Usa o timeStamp do evento.
+  const porTecla = new Map(ajustes.teclado ? jogadores.map((j) => [j.tecla, j.id]) : []);
+  function teclaJogador(e) {
+    const id = porTecla.get(e.code);
+    if (!id || document.querySelector('dialog[open]')) return false;
+    e.preventDefault();
+    if (e.type === 'keydown') {
+      if (!e.repeat) {
+        desbloquear();
+        processar(buzzer.pressionar(id, `tecla:${e.code}`, e.timeStamp));
+      }
+    } else processar(buzzer.soltar(id, `tecla:${e.code}`, e.timeStamp));
+    return true;
+  }
+  const aoSoltarTecla = (e) => teclaJogador(e);
+  document.addEventListener('keyup', aoSoltarTecla);
+
   function teclado(e) {
+    if (teclaJogador(e)) return;
     if (document.querySelector('dialog[open]')) return;
     const emControle = e.target.closest?.('button, a, input, select, textarea');
     if ((e.code === 'Space' || e.key === ' ') && !emControle) {
@@ -407,6 +426,7 @@ export function render(alvo, params) {
     buzzer.parar();
     paisagem.removeEventListener('change', organizar);
     document.removeEventListener('keydown', teclado);
+    document.removeEventListener('keyup', aoSoltarTecla);
     document.removeEventListener('visibilitychange', aoVoltar);
     document.body.classList.remove('modo-jogo');
     trava?.release?.().catch?.(() => {});

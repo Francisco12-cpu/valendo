@@ -1455,3 +1455,526 @@ body.modo-jogo .conteudo {
   font-weight: 700;
   color: var(--perigo);
 }
+
+/* =========================================================
+   Fase 2 — ferramentas rápidas
+   ========================================================= */
+.campo--area {
+  min-height: 8rem;
+  resize: vertical;
+  font-family: var(--fonte-corpo);
+  line-height: 1.5;
+}
+
+.campo--titulo {
+  font-family: var(--fonte-titulo);
+  font-size: var(--fs-titulo);
+  font-weight: 700;
+  line-height: 1.1;
+  padding-block: var(--esp-1);
+}
+
+select.campo {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.5rem;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 1.25rem) 50%, calc(100% - 0.85rem) 50%;
+  background-size: 0.4rem 0.4rem;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+kbd {
+  display: inline-block;
+  min-width: 1.8em;
+  padding: 0 0.4em;
+  border: 2px solid currentColor;
+  border-bottom-width: 4px;
+  border-radius: 6px;
+  font-family: var(--fonte-corpo);
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--esp-1);
+  min-height: var(--alvo);
+  font-weight: 700;
+}
+
+.voltar svg {
+  width: 1.2em;
+  height: 1.2em;
+}
+
+.vazio {
+  display: grid;
+  justify-items: center;
+  gap: var(--esp-3);
+  text-align: center;
+}
+
+/* Fonte de nomes */
+.fonte__rodape {
+  justify-content: space-between;
+}
+
+.fonte__rodape a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alvo);
+  font-weight: 700;
+}
+
+.fonte__contagem {
+  font-size: var(--fs-p);
+}
+
+/* Modo projetor: some tudo que não é conteúdo e o texto cresce */
+body.modo-projetor .cabecalho,
+body.modo-projetor .rodape,
+body.modo-projetor .crono__ajustes,
+body.modo-projetor .sorteio__lado,
+body.modo-projetor .tela__subtitulo,
+body.modo-projetor .placar__botoes .botao:not(:first-child):not(:nth-child(2)) {
+  display: none;
+}
+
+body.modo-projetor .conteudo {
+  max-width: none;
+  min-height: 100vh;
+  font-size: 1.15rem;
+}
+
+/* ---------- Turmas ---------- */
+.turmas-lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: var(--esp-5);
+  padding: 0;
+  list-style: none;
+}
+
+.turma-cartao {
+  display: grid;
+  gap: var(--esp-1);
+  color: var(--tinta);
+  text-decoration: none;
+  transition: transform var(--transicao), box-shadow var(--transicao);
+}
+
+.turma-cartao__nome {
+  font-size: 2rem;
+  line-height: 1.05;
+}
+
+.turma-cartao:active {
+  transform: translate(var(--deslize), var(--deslize));
+  box-shadow: var(--sombra-press);
+}
+
+.alunos {
+  display: grid;
+  gap: var(--esp-2);
+  padding: 0;
+  list-style: none;
+}
+
+.alunos__linha {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr) auto var(--alvo);
+  align-items: center;
+  gap: var(--esp-2);
+}
+
+.alunos__numero {
+  font-variant-numeric: tabular-nums;
+  color: var(--tinta-suave);
+  text-align: right;
+}
+
+.campo--nivel {
+  width: auto;
+  min-width: 6.5rem;
+}
+
+/* ---------- Placar ---------- */
+.placar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: var(--esp-5);
+}
+
+.placar__equipe {
+  display: grid;
+  justify-items: center;
+  gap: var(--esp-3);
+  padding: var(--esp-4);
+  background: var(--superficie);
+  border: var(--borda);
+  border-top: 14px solid var(--cor);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  text-align: center;
+}
+
+.placar__equipe[data-lider="true"] {
+  background: color-mix(in srgb, var(--cor) 25%, var(--superficie));
+}
+
+.placar__topo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--esp-2);
+  width: 100%;
+}
+
+.placar__nome {
+  min-height: var(--alvo);
+  padding: 0 var(--esp-2);
+  background: none;
+  border: 0;
+  border-bottom: 2px dashed transparent;
+  font-size: 2rem;
+  line-height: 1.1;
+  color: var(--tinta);
+}
+
+.placar__nome:hover {
+  border-bottom-color: var(--tinta-suave);
+}
+
+.placar__equipe[data-lider="true"] .placar__posicao {
+  background: var(--amarelo);
+  color: var(--tinta-fixa);
+  border-color: var(--tinta-fixa);
+}
+
+.placar__pontos {
+  font-size: clamp(3.5rem, 2.5rem + 6vw, 7rem);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.placar__pontos.esta-pulando {
+  animation: pular 260ms ease-out;
+}
+
+@keyframes pular {
+  40% { transform: scale(1.18); }
+}
+
+.placar__botoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--esp-2);
+}
+
+.placar__botoes .botao {
+  min-width: 3.4rem;
+  padding-inline: var(--esp-3);
+}
+
+body.modo-projetor .placar__pontos {
+  font-size: clamp(5rem, 3rem + 10vw, 14rem);
+}
+
+body.modo-projetor .placar__nome {
+  font-size: 3rem;
+}
+
+/* ---------- Sorteio ---------- */
+.sorteio {
+  display: grid;
+  gap: var(--esp-6) var(--esp-5);
+  align-items: start;
+}
+
+.sorteio__palco {
+  display: grid;
+  justify-items: center;
+  gap: var(--esp-4);
+  padding: var(--esp-6) var(--esp-4) var(--esp-6) 3.4rem;
+  text-align: center;
+}
+
+.sorteio__visor {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 9rem;
+  font-family: var(--fonte-titulo);
+  font-size: clamp(2.75rem, 2rem + 6vw, 6rem);
+  font-weight: 700;
+  line-height: 1;
+  overflow-wrap: anywhere;
+}
+
+.sorteio__visor[data-estado="vazio"] {
+  font-size: clamp(1.75rem, 1.4rem + 2vw, 2.5rem);
+  color: var(--tinta-suave);
+}
+
+.sorteio__visor[data-estado="sorteado"] span,
+.sorteio__visor[data-estado="sorteado"] {
+  text-decoration: underline;
+  text-decoration-color: var(--marca-texto);
+  text-decoration-thickness: 0.3em;
+  text-underline-offset: -0.08em;
+  text-decoration-skip-ink: none;
+}
+
+.sorteio__visor[data-estado="rolando"] {
+  color: var(--tinta-suave);
+}
+
+.sorteio__acoes {
+  justify-content: center;
+}
+
+.sorteio__dica {
+  font-size: var(--fs-p);
+}
+
+.sorteio__lado {
+  display: grid;
+  gap: var(--esp-5);
+}
+
+.sorteio__historico {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2) var(--esp-5);
+  margin: 0;
+  padding-left: 1.4rem;
+}
+
+.chamada {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2);
+  padding: 0;
+  list-style: none;
+}
+
+.chamada__aluno {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--esp-2);
+  min-height: var(--alvo);
+  padding: var(--esp-1) var(--esp-3);
+  background: var(--superficie);
+  border: 2px solid var(--tinta);
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+.chamada__marca {
+  display: grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: var(--verde);
+  color: var(--tinta-fixa);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.chamada__aluno[aria-pressed="false"] {
+  border-style: dashed;
+  color: var(--tinta-suave);
+  text-decoration: line-through;
+}
+
+.chamada__aluno[aria-pressed="false"] .chamada__marca {
+  background: var(--perigo);
+  color: var(--sobre-perigo);
+}
+
+.chamada__aluno[data-sorteado="true"] {
+  background: color-mix(in srgb, var(--amarelo) 35%, var(--superficie));
+}
+
+body.modo-projetor .sorteio {
+  grid-template-columns: 1fr;
+}
+
+body.modo-projetor .sorteio__visor {
+  min-height: 50vh;
+  font-size: clamp(4rem, 2rem + 9vw, 11rem);
+}
+
+@media (min-width: 1024px) {
+  .sorteio {
+    grid-template-columns: 3fr 2fr;
+  }
+}
+
+/* ---------- Cronômetro ---------- */
+.crono {
+  display: grid;
+  gap: var(--esp-6);
+}
+
+.crono__palco {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--esp-3);
+  padding-top: var(--esp-6);
+  overflow: hidden;
+  text-align: center;
+}
+
+.crono__barra {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 12px;
+  background: var(--linha-caderno);
+  border-bottom: var(--borda);
+}
+
+.crono__barra span {
+  display: block;
+  height: 100%;
+  background: var(--verde);
+  transform-origin: left;
+}
+
+.crono__visor {
+  font-size: clamp(4.5rem, 2rem + 16vw, 13rem);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+}
+
+.crono__estado {
+  min-height: 1.5em;
+  font-family: var(--fonte-titulo);
+  font-size: 2.25rem;
+  font-weight: 700;
+}
+
+.crono__acoes {
+  justify-content: center;
+}
+
+.crono[data-estado="aviso"] .crono__palco {
+  background: color-mix(in srgb, var(--amarelo) 45%, var(--superficie));
+}
+
+.crono[data-estado="aviso"] .crono__barra span {
+  background: var(--amarelo);
+}
+
+.crono[data-estado="fim"] .crono__palco {
+  background: var(--perigo);
+  color: var(--sobre-perigo);
+  animation: piscar 0.6s steps(2) 4;
+}
+
+@keyframes piscar {
+  50% { background: var(--superficie); color: var(--tinta); }
+}
+
+body.modo-projetor .crono__visor {
+  font-size: clamp(6rem, 3rem + 22vw, 24rem);
+}
+
+body.modo-projetor .crono__palco {
+  min-height: 85vh;
+  align-content: center;
+}
+
+/* ---------- Equipes ---------- */
+.equipes-resultado {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  gap: var(--esp-5);
+}
+
+.equipes-dica {
+  margin-bottom: var(--esp-4);
+}
+
+.equipe {
+  display: grid;
+  align-content: start;
+  gap: var(--esp-3);
+  padding: var(--esp-4);
+  background: var(--superficie);
+  border: var(--borda);
+  border-top: 14px solid var(--cor);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+}
+
+.equipe__topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-2);
+}
+
+.equipe__topo h3 {
+  font-size: 2rem;
+}
+
+.equipe__alunos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2);
+  padding: 0;
+  list-style: none;
+}
+
+.equipe__aluno {
+  min-height: var(--alvo);
+  padding: var(--esp-1) var(--esp-3);
+  background: color-mix(in srgb, var(--cor) 30%, var(--superficie));
+  border: 2px solid var(--tinta);
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+.equipe__aluno[aria-pressed="true"] {
+  background: var(--amarelo);
+  color: var(--tinta-fixa);
+  outline: 3px solid var(--foco);
+  outline-offset: 2px;
+}
+
+body.modo-projetor .equipe__aluno {
+  font-size: 1.4rem;
+}
+
+/* ---------- Buzzer: teclas (método D) ---------- */
+.tecla__nome {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tecla kbd {
+  border: 0;
+  min-width: 3ch;
+}
+
+.area__tecla {
+  margin-top: var(--esp-1);
+  font-size: clamp(0.9rem, 5cqmin, 1.4rem);
+  font-weight: 700;
+}

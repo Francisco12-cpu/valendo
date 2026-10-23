@@ -11,13 +11,13 @@ import { icones } from '../components/icones.js';
 // href = modalidade pronta; sem href = "Em breve".
 const MODALIDADES = [
   { id: 'buzzer', icone: 'buzzer', cor: 'var(--cor-buzzer)', href: '#/buzzer' },
-  { id: 'placar', icone: 'placar', cor: 'var(--cor-placar)' },
-  { id: 'sorteio', icone: 'sorteio', cor: 'var(--cor-sorteio)' },
+  { id: 'placar', icone: 'placar', cor: 'var(--cor-placar)', href: '#/placar' },
+  { id: 'sorteio', icone: 'sorteio', cor: 'var(--cor-sorteio)', href: '#/sorteio' },
   { id: 'quiz', icone: 'quiz', cor: 'var(--cor-quiz)' },
   { id: 'passa', icone: 'passa', cor: 'var(--cor-passa)' },
   { id: 'espiral', icone: 'espiral', cor: 'var(--cor-espiral)' },
   { id: 'provas', icone: 'provas', cor: 'var(--cor-provas)', sobreCor: 'var(--sobre-info)' },
-  { id: 'ferramentas', icone: 'ferramentas', cor: 'var(--cor-ferramentas)' },
+  { id: 'ferramentas', icone: 'ferramentas', cor: 'var(--cor-ferramentas)', href: '#/ferramentas' },
 ];
 
 export const titulo = () => t('app.nome');

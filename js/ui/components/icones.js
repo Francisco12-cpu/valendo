@@ -23,6 +23,12 @@ export const icones = {
   tema: base('<circle cx="24" cy="24" r="16"/><path d="M24 8a16 16 0 0 1 0 32z" fill="currentColor"/>'),
   juiz: base('<circle cx="20" cy="20" r="12"/><path d="M29 29l12 12M15 20h10M20 15v10"/>'),
   telaCheia: base('<path d="M8 18V8h10M30 8h10v10M40 30v10H30M18 40H8V30"/>'),
+  desfazer: base('<path d="M18 12L8 22l10 10"/><path d="M8 22h20a12 12 0 0 1 0 24h-6"/>'),
+  refazer: base('<path d="M30 12l10 10-10 10"/><path d="M40 22H20a12 12 0 0 0 0 24h6"/>'),
+  voltar: base('<path d="M28 10L14 24l14 14"/>'),
+  projetor: base('<rect x="5" y="8" width="38" height="24" rx="3"/><path d="M24 32v8M15 42h18"/>'),
+  equipes: base('<circle cx="16" cy="16" r="6"/><circle cx="33" cy="16" r="6"/><path d="M5 38c0-7 5-12 11-12s11 5 11 12M22 38c0-7 5-12 11-12s10 5 10 12"/>'),
+  turmas: base('<rect x="8" y="5" width="30" height="38" rx="3"/><path d="M8 5v38M15 14h16M15 21h16M15 28h10"/>'),
   raio: base('<path d="M27 4L10 27h12l-3 17 19-25H26z" fill="currentColor"/>'),
   seta: base('<path d="M4 8c20-2 42 6 52 30"/><path d="M43 34l13 5 4-13"/>', '0 0 64 48'),
 };

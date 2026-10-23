@@ -2,7 +2,7 @@
 import { h, svg } from '../dom.js';
 import { t } from '../../i18n/i18n.js';
 import { MAX_JOGADORES, MIN_JOGADORES } from '../../core/buzzer.js';
-import { lerAjustes, salvarAjustes, ajustesPadrao, nomePadrao, CORES_JOGADORES } from '../buzzer-ajustes.js';
+import { lerAjustes, salvarAjustes, ajustesPadrao, nomePadrao, CORES_JOGADORES, rotuloTecla, TECLAS_RESERVADAS } from '../buzzer-ajustes.js';
 import { Escolha } from '../components/escolha.js';
 import { Stepper } from '../components/stepper.js';
 import { Switch } from '../components/switch.js';
@@ -53,6 +53,7 @@ export function render(alvo) {
     aoMudar: (v) => {
       mudar({ quantidade: v });
       desenharNomes();
+      desenharTeclas();
     },
   });
 
@@ -108,9 +109,57 @@ export function render(alvo) {
   const mesa = Switch({ rotulo: t('buzzer.mesa'), ligado: ajustes.mesa, aoMudar: (v) => mudar({ mesa: v }) });
   const som = Switch({ rotulo: t('buzzer.som'), ligado: ajustes.som, aoMudar: (v) => mudar({ som: v }) });
 
+  // ---------- Método D: teclas ----------
+  const listaTeclas = h('ol', { class: 'buzzer-nomes', role: 'list' });
+  let ouvindo = null; // { i, botao, parar }
+  function desenharTeclas() {
+    listaTeclas.replaceChildren(
+      ...Array.from({ length: ajustes.quantidade }, (_, i) => {
+        const nome = (ajustes.nomes[i] || '').trim() || nomePadrao(i);
+        const botao = h('button', { type: 'button', class: 'botao tecla', 'aria-label': t('buzzer.teclaDe', { nome, tecla: rotuloTecla(ajustes.teclas[i]) }) }, h('kbd', null, rotuloTecla(ajustes.teclas[i])));
+        botao.addEventListener('click', () => capturar(i, botao, nome));
+        return h('li', { class: 'buzzer-nomes__item' }, h('span', { class: 'buzzer-nomes__cor', style: { background: CORES_JOGADORES[i] }, 'aria-hidden': 'true' }, String(i + 1)), h('span', { class: 'tecla__nome' }, nome), botao);
+      })
+    );
+  }
+
+  function capturar(i, botao, nome) {
+    ouvindo?.parar();
+    botao.querySelector('kbd').textContent = t('buzzer.aperteTecla');
+    botao.setAttribute('aria-label', t('buzzer.aperteTeclaPara', { nome }));
+    const aoTeclar = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.code === 'Escape') return parar();
+      if (TECLAS_RESERVADAS.includes(e.code)) {
+        toast(t('buzzer.teclaReservada', { tecla: rotuloTecla(e.code) }), { tipo: 'aviso' });
+        return;
+      }
+      const teclas = [...ajustes.teclas];
+      const outro = teclas.indexOf(e.code);
+      if (outro >= 0 && outro !== i) teclas[outro] = teclas[i]; // troca, sem repetir tecla
+      teclas[i] = e.code;
+      mudar({ teclas });
+      parar();
+    };
+    const parar = () => {
+      document.removeEventListener('keydown', aoTeclar, true);
+      ouvindo = null;
+      desenharTeclas();
+      listaTeclas.querySelectorAll('.tecla')[i]?.focus();
+    };
+    document.addEventListener('keydown', aoTeclar, true);
+    ouvindo = { parar };
+  }
+  desenharTeclas();
+
+  const teclado = Switch({ rotulo: t('buzzer.teclado'), ligado: ajustes.teclado, aoMudar: (v) => mudar({ teclado: v }) });
+  const blocoTeclas = h('div', { class: 'pilha' }, h('p', { class: 'texto-suave buzzer-dica' }, t('buzzer.tecladoDica')), listaTeclas);
+
   function atualizarVisibilidade() {
     contagem.hidden = ajustes.gatilho !== 'contagem';
     penalidade.hidden = ajustes.queima !== 'penalidade';
+    blocoTeclas.hidden = !ajustes.teclado;
   }
   atualizarVisibilidade();
 
@@ -142,11 +191,12 @@ export function render(alvo) {
       'div',
       { class: 'buzzer-ajustes' },
       bloco('bz-jogadores', t('buzzer.blocoJogadores'), quantidade, listaNomes),
-      bloco('bz-resposta', t('buzzer.blocoResposta'), metodo, h('div', { class: 'pilha' }, mesa, som)),
+      bloco('bz-resposta', t('buzzer.blocoResposta'), metodo, h('div', { class: 'pilha' }, mesa, som, teclado), blocoTeclas),
       bloco('bz-largada', t('buzzer.blocoLargada'), gatilho, contagem, sinal),
       bloco('bz-justica', t('buzzer.blocoJustica'), queima, penalidade, margem, h('p', { class: 'texto-suave buzzer-dica' }, t('buzzer.margemDica')))
     ),
     h('div', { class: 'linha buzzer-rodape' }, jogar.cloneNode(true), restaurar)
   );
   ativarAfundar(alvo.querySelector('.buzzer-rodape .botao'));
+  return () => ouvindo?.parar();
 }
