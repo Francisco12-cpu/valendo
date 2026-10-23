@@ -3701,3 +3701,336 @@ body.modo-aluno .conteudo {
   padding: var(--esp-3);
   text-align: center;
 }
+
+/* =========================================================
+   Fase 6 — Prova em Espiral e provas individuais
+   ========================================================= */
+.escolha-provas {
+  display: grid;
+  gap: var(--esp-2);
+  max-height: 16rem;
+  overflow: auto;
+  padding: var(--esp-1);
+  list-style: none;
+}
+
+.escolha-provas__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--esp-3);
+  min-height: var(--alvo);
+  padding: var(--esp-2) var(--esp-3);
+  background: var(--superficie);
+  border: 2px solid var(--tinta);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.escolha-provas__caixa {
+  position: absolute;
+  opacity: 0;
+}
+
+.escolha-provas__marca {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border: var(--borda);
+  border-radius: 6px;
+  background: var(--superficie);
+}
+
+.escolha-provas__caixa:checked + .escolha-provas__marca {
+  background: var(--verde);
+  border-color: var(--tinta-fixa);
+}
+
+.escolha-provas__caixa:checked + .escolha-provas__marca::after {
+  content: "✓";
+  color: var(--tinta-fixa);
+  font-weight: 700;
+}
+
+.escolha-provas__caixa:focus-visible + .escolha-provas__marca {
+  outline: 3px solid var(--foco);
+  outline-offset: 3px;
+}
+
+.campo--hora {
+  width: auto;
+  min-width: 9rem;
+}
+
+/* Painel do professor */
+.espiral__painel {
+  display: grid;
+  gap: var(--esp-5);
+  align-items: start;
+}
+
+.espiral__relogio {
+  font-size: clamp(3.5rem, 2rem + 8vw, 8rem);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.espiral__status {
+  justify-self: start;
+  font-size: var(--fs-m);
+}
+
+.espiral__status[data-status="pausado"] {
+  background: var(--amarelo);
+  color: var(--tinta-fixa);
+}
+
+.espiral__status[data-status="troca"] {
+  background: var(--rosa);
+  color: var(--tinta-fixa);
+}
+
+[data-aviso="true"] .espiral__relogio {
+  color: var(--perigo);
+}
+
+.espiral__tabela {
+  overflow-x: auto;
+}
+
+.espiral__grupos {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-base);
+}
+
+.espiral__grupos th,
+.espiral__grupos td {
+  padding: var(--esp-2) var(--esp-3);
+  border-bottom: 2px dashed var(--linha-caderno);
+  text-align: left;
+}
+
+.espiral__grupos thead th {
+  border-bottom: var(--borda);
+}
+
+.espiral__grupos tr[data-pausa="true"],
+.espiral__grupos tr[data-status="entregue"] {
+  color: var(--tinta-suave);
+}
+
+.espiral__barra {
+  position: relative;
+  display: inline-block;
+  min-width: 6rem;
+  padding: 0.1rem 0.5rem;
+  border: 2px solid var(--tinta);
+  border-radius: 999px;
+  overflow: hidden;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  z-index: 0;
+}
+
+.espiral__barra::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--valor) * 100%);
+  background: color-mix(in srgb, var(--verde) 45%, transparent);
+  z-index: -1;
+}
+
+.espiral__controles {
+  margin-top: var(--esp-5);
+}
+
+.espiral__fim {
+  font-size: var(--fs-titulo);
+}
+
+@media (min-width: 900px) {
+  .espiral__painel {
+    grid-template-columns: minmax(16rem, 1fr) 2fr;
+  }
+}
+
+/* Grade final */
+.grade__rolagem {
+  overflow-x: auto;
+  border: var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+}
+
+.grade {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.grade th,
+.grade td {
+  padding: var(--esp-2);
+  border-bottom: 2px solid var(--linha-caderno);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.grade thead th {
+  border-bottom: var(--borda);
+  font-size: var(--fs-p);
+}
+
+.grade tbody th {
+  text-align: left;
+}
+
+.grade__celula {
+  display: grid;
+  justify-items: center;
+  gap: 0.1rem;
+  width: 100%;
+  min-width: 5.5rem;
+  min-height: var(--alvo);
+  padding: var(--esp-1) var(--esp-2);
+  background: var(--superficie);
+  border: 2px solid var(--tinta);
+  border-radius: 10px;
+}
+
+.grade__celula[data-nivel="alta"] {
+  background: color-mix(in srgb, var(--verde) 40%, var(--superficie));
+}
+
+.grade__celula[data-nivel="media"] {
+  background: color-mix(in srgb, var(--amarelo) 45%, var(--superficie));
+}
+
+.grade__celula[data-nivel="baixa"] {
+  background: color-mix(in srgb, var(--rosa) 35%, var(--superficie));
+}
+
+.grade__celula[data-nivel="vazia"] {
+  border-style: dashed;
+  color: var(--tinta-suave);
+}
+
+.grade__nota {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.grade__branco {
+  font-size: 0.75rem;
+}
+
+.grade__total {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.grade__questoes {
+  display: grid;
+  gap: var(--esp-3);
+  padding-left: 1.2rem;
+}
+
+.grade__questao {
+  display: grid;
+  gap: var(--esp-1);
+}
+
+.grade__estado {
+  font-weight: 700;
+}
+
+.grade__estado[data-certo="true"] {
+  color: var(--sucesso);
+}
+
+.grade__estado[data-certo="false"] {
+  color: var(--perigo);
+}
+
+/* Aluno: provas */
+.aluno__opcao--compacta {
+  min-height: 3.25rem;
+  font-size: var(--fs-base);
+}
+
+.aluno__questoes {
+  display: grid;
+  gap: var(--esp-4);
+  padding: 0;
+  list-style: none;
+}
+
+.aluno__questoes[data-pausado="true"] {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.aluno__salva {
+  min-height: 1.2em;
+  font-size: var(--fs-p);
+  font-weight: 700;
+  color: var(--sucesso);
+}
+
+.aluno__aviso {
+  max-width: none;
+  padding: var(--esp-2) var(--esp-3);
+  background: var(--amarelo);
+  color: var(--tinta-fixa);
+  border: 2.5px solid var(--tinta-fixa);
+  border-radius: 10px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.aluno__aviso:empty {
+  display: none;
+}
+
+.aluno__prova {
+  font-size: 2rem;
+}
+
+.aluno__mapa {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-1);
+  padding: 0;
+  list-style: none;
+}
+
+.aluno__mapa-item {
+  min-width: var(--alvo);
+  min-height: var(--alvo);
+  background: var(--superficie);
+  border: 2px dashed var(--tinta);
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.aluno__mapa-item[data-respondida="true"] {
+  background: color-mix(in srgb, var(--verde) 45%, var(--superficie));
+  border-style: solid;
+}
+
+.aluno__mapa-item[aria-current="step"] {
+  outline: 3px solid var(--foco);
+  outline-offset: 2px;
+}
+
+.aluno__navegar {
+  justify-content: space-between;
+}
+
+.aluno .pilha > .etiqueta {
+  justify-self: start;
+}

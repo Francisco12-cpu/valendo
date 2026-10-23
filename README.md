@@ -2,7 +2,7 @@
 
 Caixa de ferramentas **gratuita e de código aberto** para a sala de aula: buzzer, placar, sorteio, quiz, prova em espiral e muito mais. Funciona no celular, no tablet e no computador, **sem internet, sem conta e sem coletar dados**.
 
-> Status: **Fase 5 — Salas conectadas** pronta (e as Fases 0 a 4: fundação, buzzer, ferramentas, editor de atividades, quiz e Passa ou Repassa). Próximas: Prova em Espiral e provas (Fase 6) e extras (Fase 7). Quiz, Passa ou Repassa, Espiral e Provas aparecem como "Em breve" e chegam nas próximas fases. Veja o plano completo em [`PLANO-VALENDO.md`](PLANO-VALENDO.md).
+> Status: **Fase 6 — Prova em Espiral e provas** pronta (e as Fases 0 a 5). Próxima: extras (Fase 7). Quiz, Passa ou Repassa, Espiral e Provas aparecem como "Em breve" e chegam nas próximas fases. Veja o plano completo em [`PLANO-VALENDO.md`](PLANO-VALENDO.md).
 
 ## Buzzer
 
@@ -72,6 +72,16 @@ Em **Sala com celulares** (`#/sala`) cada aluno joga no próprio celular, entran
 
 **Limitações:** alguns roteadores de escola bloqueiam a conversa entre aparelhos (isolamento de clientes); nesse caso, use o **ponto de acesso do celular do professor**. Pela rede, a ordem é justa, mas não física e perfeita. Num aparelho só, quem tem o aparelho tem o controle.
 
+## Prova em Espiral e provas individuais
+
+Abertas pela **Sala com celulares** (pastas Espiral e Provas na tela inicial):
+
+- **Prova em Espiral** (rotação): N grupos × M provas (estações), tempo por rodada (ou o tempo de cada prova), sentido do giro, **grupo em pausa** quando há mais grupos que provas, **aviso** antes do fim, **prorrogação** (+1 min), **pausa geral** e **avanço manual** (ou automático).
+- Dois jeitos: **"a prova anda, o grupo fica"** (o aparelho fica na mesa do grupo e o conteúdo troca) ou **"o grupo anda"** (cada estação tem um aparelho).
+- No fim do tempo: **trava, salva e marca em branco** o que ficou sem resposta. Se um aparelho cair, ele volta na mesma prova e as respostas pendentes são reenviadas sem duplicar.
+- **Grade final** grupo × prova com correção automática, **correção manual** por questão, **comentários** e **exportação CSV**.
+- **Prova individual**: horário de início, limite de tempo, **embaralhamento por aluno** (fixo: a mesma ordem se ele cair e voltar), **tempo extra individual** (+5 min), navegação livre entre as questões, entrega e grade aluno × prova.
+
 Precisão: os toques usam `pointerdown`/`pointerup` com `event.timeStamp`, multitoque por `pointerId`, e a largada é marcada no frame do `requestAnimationFrame` em que o sinal aparece, com o som tocando no mesmo instante (WebAudio).
 
 ## Como rodar localmente
@@ -128,7 +138,7 @@ js/ui/screens/        início, sobre, vitrine, 404
 js/net/               transporte das salas: protocol, transport, peer-online, peer-qr, local-server
 server/               valendo-server.js (servidor local opcional, Node, sem dependências)
 vendor/               peerjs, qrcode-generator e jsQR (locais, com as licenças)
-js/core/              lógica pura, sem DOM e sem rede: buzzer, placar, sorteio, cronômetro, equipes, sala, ritmo,
+js/core/              lógica pura, sem DOM e sem rede: buzzer, placar, sorteio, cronômetro, equipes, sala, ritmo, rotation (espiral), prova,
                       atividades (schema + migração), arquivos (colar/CSV/JSON), quiz, passa-repassa
 js/core/questions/    um arquivo por tipo de questão (plugin)
 js/audio/             sons gerados com WebAudio

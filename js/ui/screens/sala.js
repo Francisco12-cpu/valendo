@@ -13,6 +13,8 @@ import { listarAtividades, salvarAtividade } from '../../storage/atividades.js';
 import { lerAjustes, CORES_JOGADORES } from '../buzzer-ajustes.js';
 import { criarHostSala } from '../sala-host.js';
 import { jogarQuiz } from './jogo-quiz.js';
+import { configEspiral, jogarEspiral } from './espiral-host.js';
+import { configProva, jogarProva } from './prova-host.js';
 import { sons, desbloquear } from '../../audio/sons.js';
 import { Escolha } from '../components/escolha.js';
 import { Switch } from '../components/switch.js';
@@ -34,17 +36,30 @@ export function render(alvo, params) {
   let host = null;
   let limparJogo = () => {};
   let limparLobby = () => {};
-  const escolhas = { jogo: 'quiz', modo: params.get('modo') ?? 'online', atividadeId: '' };
+  const JOGOS = ['quiz', 'ritmo', 'buzzer', 'espiral', 'prova'];
+  const escolhas = { jogo: JOGOS.includes(params.get('jogo')) ? params.get('jogo') : 'quiz', modo: params.get('modo') ?? 'online', atividadeId: '' };
+  let espiral = null;
+  let prova = null;
+  let todasAtividades = [];
 
   // ---------- 1) Preparar ----------
   async function preparar() {
-    const atividades = (await listarAtividades()).filter((a) => !a.erro && a.conteudo.perguntas.length && a.modalidade !== 'espiral');
+    todasAtividades = (await listarAtividades()).filter((a) => !a.erro && a.conteudo.perguntas.length);
+    const atividades = todasAtividades;
+    espiral = configEspiral(todasAtividades);
+    prova = configProva();
+    const blocoEspiral = h('div', { class: 'pilha' }, espiral.el);
+    const blocoProva = h('div', { class: 'pilha' }, prova.el);
     const seletor = h('select', { id: 'sala-atividade', class: 'campo' }, atividades.map((a) => h('option', { value: a.id }, a.titulo)));
     if (!atividades.length) seletor.append(h('option', { value: '__exemplo' }, t('sala.usarExemplo')));
     escolhas.atividadeId = seletor.value;
     seletor.addEventListener('change', () => (escolhas.atividadeId = seletor.value));
     const blocoAtividade = h('div', { class: 'pilha pilha--justa' }, h('label', { for: 'sala-atividade', class: 'rotulo' }, t('sala.atividade')), seletor);
-    const mostrar = () => (blocoAtividade.hidden = escolhas.jogo === 'buzzer');
+    const mostrar = () => {
+      blocoAtividade.hidden = escolhas.jogo === 'buzzer' || escolhas.jogo === 'espiral';
+      blocoEspiral.hidden = escolhas.jogo !== 'espiral';
+      blocoProva.hidden = escolhas.jogo !== 'prova';
+    };
     mostrar();
 
     alvo.append(
@@ -64,9 +79,13 @@ export function render(alvo, params) {
               { valor: 'quiz', texto: t('sala.quizAoVivo'), descricao: t('sala.quizAoVivoDesc') },
               { valor: 'ritmo', texto: t('sala.ritmo'), descricao: t('sala.ritmoDesc') },
               { valor: 'buzzer', texto: t('sala.buzzerC'), descricao: t('sala.buzzerCDesc') },
+              { valor: 'espiral', texto: t('sala.espiral'), descricao: t('sala.espiralDesc') },
+              { valor: 'prova', texto: t('sala.prova'), descricao: t('sala.provaDesc') },
             ],
           }),
-          blocoAtividade
+          blocoAtividade,
+          blocoEspiral,
+          blocoProva
         ),
         h(
           'section',
@@ -91,6 +110,7 @@ export function render(alvo, params) {
 
   async function abrirSala() {
     const botao = alvo.querySelector('.buzzer-rodape .botao');
+    if (escolhas.jogo === 'espiral' && !espiral.valores.provas.length) return toast(t('espiral.escolhaProvas'), { tipo: 'aviso' });
     botao.disabled = true;
     toast(t('sala.abrindo'));
     let transporte;
@@ -123,7 +143,8 @@ export function render(alvo, params) {
       const alunos = Object.values(host.sala.clientes);
       const on = host.conectados().length;
       contagem.textContent = t('sala.naSala', { n: on });
-      comecar.disabled = escolhas.jogo === 'buzzer' ? on < 2 : on < 1;
+      const minimo = escolhas.jogo === 'buzzer' ? 2 : escolhas.jogo === 'espiral' && espiral.valores.modo === 'estacao' ? espiral.valores.provas.length : 1;
+      comecar.disabled = on < minimo;
       lista.replaceChildren(
         ...alunos.map((c) => {
           const sinal = host.sinal(c);
@@ -194,7 +215,7 @@ export function render(alvo, params) {
     const conectados = host.conectados();
     const participantes = conectados.map((c, i) => ({ id: c.clientId, nome: c.nome, cor: CORES_JOGADORES[i % 8] }));
     let atividade = null;
-    if (escolhas.jogo !== 'buzzer') {
+    if (escolhas.jogo !== 'buzzer' && escolhas.jogo !== 'espiral') {
       if (escolhas.atividadeId === '__exemplo' || !escolhas.atividadeId) {
         atividade = quizExemplo();
         await salvarAtividade(atividade);
@@ -215,6 +236,8 @@ export function render(alvo, params) {
           }),
       });
     } else if (escolhas.jogo === 'ritmo') limparJogo = jogarRitmo(atividade, participantes, extraTopo);
+    else if (escolhas.jogo === 'espiral') limparJogo = jogarEspiral(alvo, host, espiral.valores, todasAtividades, participantes, extraTopo);
+    else if (escolhas.jogo === 'prova') limparJogo = jogarProva(alvo, host, prova.valores, atividade, participantes, extraTopo);
     else limparJogo = jogarBuzzerC(participantes.slice(0, 8), extraTopo);
   }
 

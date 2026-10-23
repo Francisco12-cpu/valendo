@@ -1,7 +1,7 @@
 // Service worker do Valendo!: guarda o app inteiro no aparelho para funcionar offline.
 // Ao publicar uma versão nova, troque VERSAO (e em js/config.js) e mantenha ARQUIVOS em dia
 // — o teste tests/fase0.test.js confere se todos existem.
-const VERSAO = '0.6.0';
+const VERSAO = '0.7.1';
 const CACHE = `valendo-${VERSAO}`;
 
 const ARQUIVOS = [
@@ -16,6 +16,7 @@ const ARQUIVOS = [
   './js/audio/sons.js',
   './js/config.js',
   './js/core/activity.js',
+  './js/core/aleatorio.js',
   './js/core/arquivos.js',
   './js/core/buzzer.js',
   './js/core/clock.js',
@@ -23,6 +24,7 @@ const ARQUIVOS = [
   './js/core/ids.js',
   './js/core/nomes.js',
   './js/core/passa-repassa.js',
+  './js/core/prova.js',
   './js/core/questions/base.js',
   './js/core/questions/curta.js',
   './js/core/questions/enquete.js',
@@ -33,6 +35,7 @@ const ARQUIVOS = [
   './js/core/questions/vf.js',
   './js/core/quiz.js',
   './js/core/ritmo.js',
+  './js/core/rotation.js',
   './js/core/sala.js',
   './js/core/scoring.js',
   './js/core/sorteador.js',
@@ -54,6 +57,7 @@ const ARQUIVOS = [
   './js/ui/components/botao.js',
   './js/ui/components/escolha.js',
   './js/ui/components/fonte-nomes.js',
+  './js/ui/components/grade.js',
   './js/ui/components/icones.js',
   './js/ui/components/mascote.js',
   './js/ui/components/modal.js',
@@ -75,6 +79,7 @@ const ARQUIVOS = [
   './js/ui/screens/editor.js',
   './js/ui/screens/entrar.js',
   './js/ui/screens/equipes.js',
+  './js/ui/screens/espiral-host.js',
   './js/ui/screens/ferramentas.js',
   './js/ui/screens/inicio.js',
   './js/ui/screens/jogar.js',
@@ -83,6 +88,7 @@ const ARQUIVOS = [
   './js/ui/screens/jogos.js',
   './js/ui/screens/nao-encontrado.js',
   './js/ui/screens/placar.js',
+  './js/ui/screens/prova-host.js',
   './js/ui/screens/sala.js',
   './js/ui/screens/sobre.js',
   './js/ui/screens/sorteio.js',

@@ -28,7 +28,7 @@ export function render(alvo, params) {
     }
     if (a.modalidade === 'prova' || a.modalidade === 'espiral') {
       alvo.append(
-        h('div', { class: 'vazio cartao' }, h('h1', { tabindex: '-1' }, a.titulo), h('p', null, t('jogar.emBreveProva')), h('a', { class: 'botao', href: `#/atividades/testar?id=${a.id}` }, t('atividades.testar')))
+        h('div', { class: 'vazio cartao' }, h('h1', { tabindex: '-1' }, a.titulo), h('p', null, t('jogar.provaNaSala')), h('a', { class: 'botao botao--primario', href: `#/sala?jogo=${a.modalidade === 'espiral' ? 'espiral' : 'prova'}` }, t('jogar.abrirSalaProva')), h('a', { class: 'botao', href: `#/atividades/testar?id=${a.id}` }, t('atividades.testar')))
       );
       return;
     }

@@ -7,7 +7,7 @@ import { criarEmissor, decodificar, criarDeduplicador } from '../net/protocol.js
 const agora = () => performance.now();
 const INTERVALO_PING = 2000;
 
-// jogo: { paraAluno(clientId, t) → estado, aoAcao(clientId, acao, tHost), aoEntrar?(clientId) }
+// jogo: { paraAluno(clientId, t) → estado, aoAcao(clientId, acao, tHost, tChegada), aoEntrar?(clientId) }
 export function criarHostSala(transporte, { aoMudar = () => {} } = {}) {
   let sala = S.criarSala({ codigo: transporte.codigo });
   let jogo = null;
@@ -82,7 +82,7 @@ export function criarHostSala(transporte, { aoMudar = () => {} } = {}) {
       transporte.enviar(cx, emitir('ack', { acaoId: msg.acao.id, ok: r.ok || r.motivo === 'duplicada', motivo: r.motivo }));
       if (r.ok && jogo) {
         const tHost = S.tempoNoHost(sala.clientes[clientId], msg.acao.tLocal, t);
-        jogo.aoAcao(clientId, msg.acao, tHost);
+        jogo.aoAcao(clientId, msg.acao, tHost, t);
       }
       aoMudar();
     } else if (msg.tipo === 'sair') {

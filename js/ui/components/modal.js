@@ -10,13 +10,19 @@ export function abrirModal({ titulo, conteudo, acoes = [] }) {
   return new Promise((resolver) => {
     const origem = document.activeElement;
     const idTitulo = `modal-titulo-${++contador}`;
-    let valor = null;
+    let terminado = false;
 
     const dialogo = h('dialog', { class: 'modal', 'aria-labelledby': idTitulo });
-    const fechar = (v) => {
-      valor = v;
-      dialogo.close();
+    // Resolve na hora (não espera o evento "close", que o navegador pode adiar).
+    const finalizar = (v) => {
+      if (terminado) return;
+      terminado = true;
+      if (dialogo.open) dialogo.close();
+      dialogo.remove();
+      if (origem && typeof origem.focus === 'function' && origem.isConnected) origem.focus();
+      resolver(v);
     };
+    const fechar = (v) => finalizar(v);
 
     const partes = [
       h(
@@ -41,11 +47,8 @@ export function abrirModal({ titulo, conteudo, acoes = [] }) {
       if (e.target === dialogo) fechar(null);
     });
 
-    dialogo.addEventListener('close', () => {
-      dialogo.remove();
-      if (origem && typeof origem.focus === 'function') origem.focus();
-      resolver(valor);
-    });
+    // Esc fecha sem escolha.
+    dialogo.addEventListener('close', () => finalizar(null));
 
     document.body.append(dialogo);
     dialogo.showModal();

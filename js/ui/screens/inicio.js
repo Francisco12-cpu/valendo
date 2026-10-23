@@ -15,8 +15,8 @@ const MODALIDADES = [
   { id: 'sorteio', icone: 'sorteio', cor: 'var(--cor-sorteio)', href: '#/sorteio' },
   { id: 'quiz', icone: 'quiz', cor: 'var(--cor-quiz)', href: '#/quiz' },
   { id: 'passa', icone: 'passa', cor: 'var(--cor-passa)', href: '#/passa' },
-  { id: 'espiral', icone: 'espiral', cor: 'var(--cor-espiral)' },
-  { id: 'provas', icone: 'provas', cor: 'var(--cor-provas)', sobreCor: 'var(--sobre-info)' },
+  { id: 'espiral', icone: 'espiral', cor: 'var(--cor-espiral)', href: '#/sala?jogo=espiral' },
+  { id: 'provas', icone: 'provas', cor: 'var(--cor-provas)', sobreCor: 'var(--sobre-info)', href: '#/sala?jogo=prova' },
   { id: 'ferramentas', icone: 'ferramentas', cor: 'var(--cor-ferramentas)', href: '#/ferramentas' },
 ];
 

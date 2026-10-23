@@ -9,6 +9,7 @@ import { formatarMs } from '../../core/clock.js';
 import { criarClienteSala } from '../sala-cliente.js';
 import { MARCAS } from '../questoes.js';
 import { Botao } from '../components/botao.js';
+import { abrirModal } from '../components/modal.js';
 import { Mascote } from '../components/mascote.js';
 import { QRCodigo, LeitorQR } from '../components/qr.js';
 import { icones } from '../components/icones.js';
@@ -130,6 +131,204 @@ export function render(alvo, params) {
     if (e.tipo === 'quiz') return quiz(e);
     if (e.tipo === 'ritmo') return ritmo(e);
     if (e.tipo === 'buzzer') return buzzer(e);
+    if (e.tipo === 'espiral') return espiral(e);
+    if (e.tipo === 'prova') return provaIndividual(e);
+  }
+
+  const mmss = (ms) => `${Math.floor(ms / 60000)}:${String(Math.floor((ms % 60000) / 1000)).padStart(2, '0')}`;
+  const temResposta = (r) => r !== undefined && r !== null && r !== '' && !(Array.isArray(r) && !r.length);
+
+  // Resposta que pode ser trocada até travar (provas). Marca a escolhida sem redesenhar tudo.
+  function respostaEditavel(p, atual, aoMudar) {
+    if (p.tipo === 'multipla' || p.tipo === 'enquete' || p.tipo === 'vf') {
+      const itens =
+        p.tipo === 'vf'
+          ? [
+              { id: true, texto: t('questao.verdadeiro'), cor: MARCAS[3].cor, forma: '✓' },
+              { id: false, texto: t('questao.falso'), cor: MARCAS[0].cor, forma: '✕' },
+            ]
+          : p.opcoes.map((o, i) => ({ id: o.id, texto: o.texto, cor: MARCAS[i % 8].cor, forma: MARCAS[i % 8].forma }));
+      let escolha = p.varias ? new Set(Array.isArray(atual) ? atual : []) : atual;
+      const marcado = (id) => (p.varias ? escolha.has(id) : Array.isArray(escolha) ? escolha.includes(id) : escolha === id);
+      const botoes = itens.map((it) => {
+        const b = h('button', { type: 'button', class: 'aluno__opcao aluno__opcao--compacta', style: { '--cor': it.cor }, 'aria-pressed': String(marcado(it.id)) }, h('span', { class: 'visor__forma', 'aria-hidden': 'true' }, it.forma), h('span', null, it.texto));
+        b.addEventListener('click', () => {
+          if (p.varias) {
+            if (escolha.has(it.id)) escolha.delete(it.id);
+            else escolha.add(it.id);
+            aoMudar([...escolha]);
+          } else {
+            escolha = p.tipo === 'multipla' ? [it.id] : it.id;
+            aoMudar(escolha);
+          }
+          botoes.forEach((x, k) => x.setAttribute('aria-pressed', String(marcado(itens[k].id))));
+        });
+        return b;
+      });
+      return h('div', { class: 'pilha' }, p.varias ? h('p', { class: 'texto-suave dica' }, t('questao.variasCorretas')) : null, h('div', { class: 'aluno__opcoes' }, botoes));
+    }
+    if (p.tipo === 'curta' || p.tipo === 'numerica') {
+      const campo = h('input', { class: 'campo aluno__campo', autocomplete: 'off', inputmode: p.tipo === 'numerica' ? 'decimal' : 'text', maxlength: 200, 'aria-label': `${t('questao.suaResposta')}${p.unidade ? ` (${p.unidade})` : ''}` });
+      campo.value = atual ?? '';
+      let salvo = atual ?? '';
+      const salvarCampo = () => {
+        const v = campo.value.trim();
+        if (v === salvo) return;
+        salvo = v;
+        aoMudar(v);
+      };
+      campo.addEventListener('change', salvarCampo);
+      campo.addEventListener('keydown', (ev) => ev.key === 'Enter' && salvarCampo());
+      return h('div', { class: 'linha' }, campo, Botao({ texto: t('provaInd.salvar'), aoClicar: salvarCampo }));
+    }
+    return p.texto ? h('p', null, p.texto) : null;
+  }
+
+  // ---------- Prova em Espiral (aparelho do grupo ou da estação) ----------
+  // O host reenvia o estado a cada resposta e a cada 5 s: só reconstrói a tela quando algo
+  // estrutural muda (para não apagar o que o aluno está digitando).
+  let telaEspiral = null;
+  function espiral(e) {
+    if (e.espectador) return trocar(h('p', { class: 'aluno__aguarde' }, t('espiral.aparelhoSobrando')));
+    const chave = `${e.status}|${e.rodada}|${e.prova?.id}|${e.travado}|${e.pausa}|${e.grupo}`;
+    const fim = e.restaMs === null ? null : performance.now() + e.restaMs;
+    if (telaEspiral?.chave === chave) return telaEspiral.atualizar(e, fim);
+    const relogioEl = h('span', { class: 'aluno__tempo', role: 'timer' });
+    const aviso = h('p', { class: 'aluno__aviso', role: 'alert' });
+    const cabeca = h('div', { class: 'aluno__barra' }, h('span', { class: 'etiqueta' }, e.modo === 'estacao' ? e.estacao : e.grupo), h('span', { class: 'etiqueta' }, t('espiral.rodada', { n: e.rodada, total: e.total })), relogioEl);
+    const salvas = new Map();
+    const atualizar = (est, fimLocal) => {
+      clearInterval(relogio);
+      const tique = () => (relogioEl.textContent = fimLocal === null ? '' : mmss(Math.max(0, fimLocal - performance.now())));
+      tique();
+      if (est.status === 'rodando') relogio = setInterval(tique, 500);
+      aviso.textContent = est.aviso ? t('espiral.avisoAluno') : '';
+      for (const [qid, el] of salvas) el.textContent = temResposta(est.respostas?.[qid]) ? t('provaInd.salva') : '';
+    };
+    telaEspiral = { chave, atualizar };
+    if (e.status === 'preparando') trocar(cabeca, h('p', { class: 'aluno__aguarde' }, e.modo === 'estacao' ? t('espiral.estacaoAguarde', { nome: e.estacao }) : t('espiral.aguardeInicio', { nome: e.grupo })));
+    else if (e.status === 'fim') trocar(h('div', { class: 'aluno__lobby pilha' }, Mascote({ humor: 'feliz', tamanho: '6rem' }), h('h1', { tabindex: '-1', class: 'manuscrito' }, t('espiral.fimAluno'))));
+    else if (e.pausa) trocar(cabeca, h('p', { class: 'aluno__aguarde' }, e.modo === 'estacao' ? t('espiral.estacaoVazia') : t('espiral.descansaAluno')), e.proxima ? h('p', { class: 'etiqueta' }, t('espiral.proximaAluno', { prova: e.proxima })) : null);
+    else if (e.travado || e.status === 'troca') {
+      trocar(
+        cabeca,
+        h(
+          'div',
+          { class: 'aluno__enviado pilha' },
+          h('p', { class: 'manuscrito aluno__grande' }, t('espiral.tempoEsgotado')),
+          h('p', null, t('espiral.respostasSalvas')),
+          e.proxima !== undefined ? h('p', { class: 'etiqueta' }, e.proxima ? t('espiral.proximaAluno', { prova: e.proxima }) : t('espiral.proximaDescanso')) : null
+        )
+      );
+    } else {
+      const pausado = e.status === 'pausado';
+      trocar(
+        cabeca,
+        pausado ? h('p', { class: 'aluno__aviso', role: 'alert' }, t('espiral.pausaGeral')) : aviso,
+        e.modo === 'estacao' ? h('p', { class: 'etiqueta' }, t('espiral.grupoAqui', { nome: e.grupo })) : null,
+        h('h1', { class: 'manuscrito aluno__prova', tabindex: '-1' }, e.prova.titulo),
+        h(
+          'ol',
+          { class: 'aluno__questoes', 'data-pausado': String(pausado) },
+          e.prova.perguntas.map((p) => {
+            const marca = h('span', { class: 'aluno__salva', 'aria-live': 'polite' });
+            salvas.set(p.id, marca);
+            return h(
+              'li',
+              { class: 'cartao pilha' },
+              h('p', { class: 'aluno__enunciado' }, p.enunciado),
+              respostaEditavel(p, e.respostas[p.id], (resposta) => {
+                cliente.agir('espiral', { prova: e.prova.id, qid: p.id, resposta });
+                marca.textContent = t('provaInd.salvando');
+              }),
+              marca
+            );
+          })
+        )
+      );
+    }
+    atualizar(e, fim);
+  }
+
+  // ---------- Prova individual ----------
+  let telaProva = null;
+  function provaIndividual(e) {
+    if (e.aguardando) return trocar(h('p', { class: 'aluno__aguarde' }, t('entrar.aguarde')));
+    const chave = `${e.status}|${e.perguntas?.length ?? 0}`;
+    if (telaProva?.chave === chave) return telaProva.atualizar(e);
+    const relogioEl = h('span', { class: 'aluno__tempo', role: 'timer' });
+    let atual = telaProva?.indice ?? 0;
+    let respostas = { ...(e.respostas ?? {}) };
+    let fimLocal = performance.now() + e.restaMs;
+    let inicioLocal = performance.now() + e.inicioEmMs;
+    let navegar = () => {};
+    const tique = () => (relogioEl.textContent = mmss(e.status === 'aguardando' ? Math.max(0, inicioLocal - performance.now()) : Math.max(0, fimLocal - performance.now())));
+    clearInterval(relogio);
+    relogio = setInterval(tique, 500);
+    tique();
+    telaProva = {
+      chave,
+      atualizar(est) {
+        fimLocal = performance.now() + est.restaMs;
+        inicioLocal = performance.now() + est.inicioEmMs;
+        respostas = { ...(est.respostas ?? {}), ...respostas };
+        tique();
+      },
+      get indice() {
+        return atual;
+      },
+    };
+    const cabeca = h('div', { class: 'aluno__barra' }, h('span', { class: 'etiqueta' }, e.titulo), relogioEl);
+    if (e.status === 'aguardando') return trocar(cabeca, h('p', { class: 'aluno__aguarde' }, t('provaInd.aguardeInicio')));
+    if (e.status === 'entregue') return trocar(h('div', { class: 'aluno__lobby pilha' }, Mascote({ humor: 'feliz', tamanho: '6rem' }), h('h1', { tabindex: '-1', class: 'manuscrito' }, t('provaInd.entregue'))));
+    if (e.status === 'encerrada') return trocar(h('div', { class: 'aluno__lobby pilha' }, Mascote({ humor: 'neutro', tamanho: '6rem' }), h('h1', { tabindex: '-1', class: 'manuscrito' }, t('provaInd.encerradaAluno')), h('p', null, t('espiral.respostasSalvas'))));
+    const mapa = h('ol', { class: 'aluno__mapa', 'aria-label': t('provaInd.mapa') });
+    const area = h('div', { class: 'pilha' });
+    navegar = () => {
+      const p = e.perguntas[atual];
+      mapa.replaceChildren(
+        ...e.perguntas.map((q, i) => {
+          const respondida = temResposta(respostas[q.id]);
+          const b = h('button', { type: 'button', class: 'aluno__mapa-item', 'aria-current': i === atual ? 'step' : null, 'data-respondida': String(respondida), 'aria-label': t('provaInd.irPara', { n: i + 1, estado: respondida ? t('provaInd.respondida') : t('provaInd.semResposta') }) }, String(i + 1));
+          b.addEventListener('click', () => {
+            atual = i;
+            navegar();
+          });
+          return h('li', null, b);
+        })
+      );
+      const entregar = async () => {
+        const faltam = e.perguntas.filter((q) => !temResposta(respostas[q.id])).length;
+        const ok = await abrirModal({
+          titulo: t('provaInd.entregarTitulo'),
+          conteudo: faltam ? t('provaInd.entregarFaltam', { n: faltam }) : t('provaInd.entregarTexto'),
+          acoes: [
+            { texto: t('vitrine.secundario'), valor: false },
+            { texto: t('provaInd.entregar'), variante: 'primario', valor: true },
+          ],
+        });
+        if (ok) cliente.agir('prova-entregar', {});
+      };
+      area.replaceChildren(
+        h('p', { class: 'etiqueta' }, t('testar.progresso', { i: atual + 1, n: e.perguntas.length })),
+        h('p', { class: 'aluno__enunciado' }, p.enunciado),
+        ...[
+          respostaEditavel(p, respostas[p.id], (resposta) => {
+            respostas[p.id] = resposta;
+            cliente.agir('prova-responder', { qid: p.id, resposta });
+            mapa.querySelectorAll('.aluno__mapa-item')[atual].dataset.respondida = String(temResposta(resposta));
+          }),
+        ].filter(Boolean),
+        h(
+          'div',
+          { class: 'linha aluno__navegar' },
+          Botao({ texto: t('provaInd.anterior'), desativado: atual === 0, aoClicar: () => ((atual -= 1), navegar()) }),
+          atual + 1 < e.perguntas.length ? Botao({ texto: t('provaInd.proxima'), variante: 'primario', aoClicar: () => ((atual += 1), navegar()) }) : Botao({ texto: t('provaInd.entregar'), variante: 'primario', aoClicar: entregar })
+        )
+      );
+    };
+    trocar(cabeca, mapa, area);
+    navegar();
   }
 
   function botoesResposta(p, aoEscolher) {
