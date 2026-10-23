@@ -56,6 +56,8 @@
   --sucesso: #1F7A35;
   --marca-texto: rgba(255, 210, 63, 0.8);
   --foco: var(--laranja);         /* contorno de foco: 3.9:1 no papel (UI ≥ 3:1) */
+  --grafico: #2A78D6;             /* barras de série única (validado: luminosidade, croma e contraste) */
+  --grafico-grade: #E4E2DC;
   --veu: rgba(20, 20, 20, 0.55);  /* fundo atrás do modal */
 
   /* Cores por modalidade (§5) */
@@ -119,6 +121,8 @@
     --marca-texto: rgba(255, 210, 63, 0.35);
     --foco: #FF8A5B;
     --veu: rgba(0, 0, 0, 0.65);
+    --grafico: #3987E5;
+    --grafico-grade: #3A4840;
     color-scheme: dark;
   }
 }
@@ -144,5 +148,7 @@
   --marca-texto: rgba(255, 210, 63, 0.35);
   --foco: #FF8A5B;
   --veu: rgba(0, 0, 0, 0.65);
+  --grafico: #3987E5;
+  --grafico-grade: #3A4840;
   color-scheme: dark;
 }

@@ -15,6 +15,9 @@ import { criarHostSala } from '../sala-host.js';
 import { jogarQuiz } from './jogo-quiz.js';
 import { configEspiral, jogarEspiral } from './espiral-host.js';
 import { configProva, jogarProva } from './prova-host.js';
+import { configNuvem, jogarNuvem } from './nuvem-host.js';
+import { criarAtividade } from '../../core/activity.js';
+import { novaQuestao } from '../../core/questions/index.js';
 import { sons, desbloquear } from '../../audio/sons.js';
 import { Escolha } from '../components/escolha.js';
 import { Switch } from '../components/switch.js';
@@ -36,7 +39,9 @@ export function render(alvo, params) {
   let host = null;
   let limparJogo = () => {};
   let limparLobby = () => {};
-  const JOGOS = ['quiz', 'ritmo', 'buzzer', 'espiral', 'prova'];
+  const JOGOS = ['quiz', 'ritmo', 'buzzer', 'espiral', 'prova', 'enquete', 'nuvem'];
+  let nuvemCfg = null;
+  const enquete = { pergunta: '', opcoes: [] };
   const escolhas = { jogo: JOGOS.includes(params.get('jogo')) ? params.get('jogo') : 'quiz', modo: params.get('modo') ?? 'online', atividadeId: '' };
   let espiral = null;
   let prova = null;
@@ -50,15 +55,31 @@ export function render(alvo, params) {
     prova = configProva();
     const blocoEspiral = h('div', { class: 'pilha' }, espiral.el);
     const blocoProva = h('div', { class: 'pilha' }, prova.el);
+    nuvemCfg = configNuvem();
+    const blocoNuvem = h('div', { class: 'pilha' }, nuvemCfg.el);
+    const campoEnquete = h('input', { id: 'enquete-pergunta', class: 'campo', maxlength: 200, placeholder: t('enquete.perguntaDica') });
+    const opcoesEnquete = h('textarea', { id: 'enquete-opcoes', class: 'campo campo--area', rows: 4, placeholder: t('enquete.opcoesDica') });
+    campoEnquete.addEventListener('input', () => (enquete.pergunta = campoEnquete.value.trim()));
+    opcoesEnquete.addEventListener('input', () => (enquete.opcoes = opcoesEnquete.value.split('\n').map((x) => x.trim()).filter(Boolean).slice(0, 8)));
+    const blocoEnquete = h(
+      'div',
+      { class: 'pilha' },
+      h('div', { class: 'pilha pilha--justa' }, h('label', { for: 'enquete-pergunta', class: 'rotulo' }, t('enquete.pergunta')), campoEnquete),
+      h('div', { class: 'pilha pilha--justa' }, h('label', { for: 'enquete-opcoes', class: 'rotulo' }, t('enquete.opcoes')), opcoesEnquete)
+    );
+    const blocoAusente = h('div', null, Switch({ rotulo: t('jogar.ausente'), ligado: false, aoMudar: (v) => (escolhas.ausente = v) }), h('p', { class: 'texto-suave dica' }, t('jogar.ausenteDica')));
     const seletor = h('select', { id: 'sala-atividade', class: 'campo' }, atividades.map((a) => h('option', { value: a.id }, a.titulo)));
     if (!atividades.length) seletor.append(h('option', { value: '__exemplo' }, t('sala.usarExemplo')));
     escolhas.atividadeId = seletor.value;
     seletor.addEventListener('change', () => (escolhas.atividadeId = seletor.value));
     const blocoAtividade = h('div', { class: 'pilha pilha--justa' }, h('label', { for: 'sala-atividade', class: 'rotulo' }, t('sala.atividade')), seletor);
     const mostrar = () => {
-      blocoAtividade.hidden = escolhas.jogo === 'buzzer' || escolhas.jogo === 'espiral';
+      blocoAtividade.hidden = ['buzzer', 'espiral', 'enquete', 'nuvem'].includes(escolhas.jogo);
       blocoEspiral.hidden = escolhas.jogo !== 'espiral';
       blocoProva.hidden = escolhas.jogo !== 'prova';
+      blocoNuvem.hidden = escolhas.jogo !== 'nuvem';
+      blocoEnquete.hidden = escolhas.jogo !== 'enquete';
+      blocoAusente.hidden = escolhas.jogo !== 'quiz';
     };
     mostrar();
 
@@ -81,11 +102,16 @@ export function render(alvo, params) {
               { valor: 'buzzer', texto: t('sala.buzzerC'), descricao: t('sala.buzzerCDesc') },
               { valor: 'espiral', texto: t('sala.espiral'), descricao: t('sala.espiralDesc') },
               { valor: 'prova', texto: t('sala.prova'), descricao: t('sala.provaDesc') },
+              { valor: 'enquete', texto: t('sala.enquete'), descricao: t('sala.enqueteDesc') },
+              { valor: 'nuvem', texto: t('sala.nuvem'), descricao: t('sala.nuvemDesc') },
             ],
           }),
           blocoAtividade,
+          blocoAusente,
           blocoEspiral,
-          blocoProva
+          blocoProva,
+          blocoEnquete,
+          blocoNuvem
         ),
         h(
           'section',
@@ -215,7 +241,14 @@ export function render(alvo, params) {
     const conectados = host.conectados();
     const participantes = conectados.map((c, i) => ({ id: c.clientId, nome: c.nome, cor: CORES_JOGADORES[i % 8] }));
     let atividade = null;
-    if (escolhas.jogo !== 'buzzer' && escolhas.jogo !== 'espiral') {
+    if (escolhas.jogo === 'enquete') {
+      // Enquete rápida: uma pergunta de opinião, sem ranking.
+      atividade = criarAtividade({ titulo: enquete.pergunta || t('enquete.titulo'), modalidade: 'quiz' });
+      atividade.regras.pontuacao.velocidade = false;
+      atividade.exibicao.ranking = 'oculto';
+      const opcoes = enquete.opcoes.length >= 2 ? enquete.opcoes : [t('enquete.sim'), t('enquete.nao')];
+      atividade.conteudo.perguntas = [{ ...novaQuestao('enquete', 'q1'), enunciado: enquete.pergunta || t('enquete.titulo'), tempo: 0, opcoes: opcoes.map((texto, i) => ({ id: String.fromCharCode(97 + i), texto })) }];
+    } else if (!['buzzer', 'espiral', 'nuvem'].includes(escolhas.jogo)) {
       if (escolhas.atividadeId === '__exemplo' || !escolhas.atividadeId) {
         atividade = quizExemplo();
         await salvarAtividade(atividade);
@@ -223,9 +256,10 @@ export function render(alvo, params) {
     }
     alvo.replaceChildren();
     const extraTopo = h('span', { class: 'etiqueta sala-topo' }, `${t('sala.codigoCurto')} ${host.codigo}`);
-    if (escolhas.jogo === 'quiz') {
+    if (escolhas.jogo === 'quiz' || escolhas.jogo === 'enquete') {
       limparJogo = jogarQuiz(alvo, atividade, participantes, {
         remoto: true,
+        ausente: escolhas.jogo === 'quiz' && escolhas.ausente === true,
         sairHref: '#/',
         extraTopo,
         aoMudar: () => host.transmitirEstados(),
@@ -238,6 +272,7 @@ export function render(alvo, params) {
     } else if (escolhas.jogo === 'ritmo') limparJogo = jogarRitmo(atividade, participantes, extraTopo);
     else if (escolhas.jogo === 'espiral') limparJogo = jogarEspiral(alvo, host, espiral.valores, todasAtividades, participantes, extraTopo);
     else if (escolhas.jogo === 'prova') limparJogo = jogarProva(alvo, host, prova.valores, atividade, participantes, extraTopo);
+    else if (escolhas.jogo === 'nuvem') limparJogo = jogarNuvem(alvo, host, nuvemCfg.valores, extraTopo);
     else limparJogo = jogarBuzzerC(participantes.slice(0, 8), extraTopo);
   }
 

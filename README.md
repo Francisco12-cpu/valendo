@@ -2,7 +2,7 @@
 
 Caixa de ferramentas **gratuita e de código aberto** para a sala de aula: buzzer, placar, sorteio, quiz, prova em espiral e muito mais. Funciona no celular, no tablet e no computador, **sem internet, sem conta e sem coletar dados**.
 
-> Status: **Fase 6 — Prova em Espiral e provas** pronta (e as Fases 0 a 5). Próxima: extras (Fase 7). Quiz, Passa ou Repassa, Espiral e Provas aparecem como "Em breve" e chegam nas próximas fases. Veja o plano completo em [`PLANO-VALENDO.md`](PLANO-VALENDO.md).
+> Status: **todas as fases do plano (0 a 7) prontas.** Veja o plano completo em [`PLANO-VALENDO.md`](PLANO-VALENDO.md). Quiz, Passa ou Repassa, Espiral e Provas aparecem como "Em breve" e chegam nas próximas fases. Veja o plano completo em [`PLANO-VALENDO.md`](PLANO-VALENDO.md).
 
 ## Buzzer
 
@@ -82,6 +82,15 @@ Abertas pela **Sala com celulares** (pastas Espiral e Provas na tela inicial):
 - **Grade final** grupo × prova com correção automática, **correção manual** por questão, **comentários** e **exportação CSV**.
 - **Prova individual**: horário de início, limite de tempo, **embaralhamento por aluno** (fixo: a mesma ordem se ele cair e voltar), **tempo extra individual** (+5 min), navegação livre entre as questões, entrega e grade aluno × prova.
 
+## Extras
+
+- **Relatórios** (`#/relatorios`): gráficos de acertos por questão e de desempenho por participante, as questões mais erradas e **"refazer as erradas"** (cria uma atividade só com elas). Dá para **salvar o resultado como imagem** (também no pódio do quiz).
+- **Cartões de resposta** (`#/cartoes`, estilo Plickers): imprima um cartão por aluno (ou salve em PDF); cada um mostra a letra virada para cima e a câmera do professor lê vários cartões de uma vez.
+- **Sessão da aula** (`#/sessao`): uma sequência de atividades e ferramentas, com uma barra para passar à próxima etapa.
+- **Modo professor ausente**: o quiz avança sozinho.
+- **Roleta de temas** (`#/roleta`), **enquete rápida** e **nuvem de palavras** (na sala com celulares; palavras repetidas crescem e as ofensivas não entram).
+- **Compartilhar atividade por link ou QR**: a atividade vai compactada dentro do próprio link (`#/importar?d=…`), sem servidor.
+
 Precisão: os toques usam `pointerdown`/`pointerup` com `event.timeStamp`, multitoque por `pointerId`, e a largada é marcada no frame do `requestAnimationFrame` em que o sinal aparece, com o som tocando no mesmo instante (WebAudio).
 
 ## Como rodar localmente
@@ -139,6 +148,7 @@ js/net/               transporte das salas: protocol, transport, peer-online, pe
 server/               valendo-server.js (servidor local opcional, Node, sem dependências)
 vendor/               peerjs, qrcode-generator e jsQR (locais, com as licenças)
 js/core/              lógica pura, sem DOM e sem rede: buzzer, placar, sorteio, cronômetro, equipes, sala, ritmo, rotation (espiral), prova,
+                      relatorio, nuvem, compartilhar, cartoes,
                       atividades (schema + migração), arquivos (colar/CSV/JSON), quiz, passa-repassa
 js/core/questions/    um arquivo por tipo de questão (plugin)
 js/audio/             sons gerados com WebAudio
@@ -147,7 +157,7 @@ assets/               ícones e fontes locais
 tests/                testes com node --test
 ```
 
-Rotas: `#/` (início), `#/buzzer` (ajustes), `#/buzzer/jogar` (jogo; `?relampago` usa o padrão), `#/placar`, `#/sorteio`, `#/cronometro`, `#/equipes`, `#/turmas`, `#/ferramentas`, `#/atividades` (biblioteca), `#/atividades/editar?id=…`, `#/atividades/testar?id=…`, `#/quiz`, `#/passa`, `#/jogar?id=…`, `#/sala`, `#/entrar`, `#/sobre` (Sobre e créditos), `#/vitrine` (todos os componentes).
+Rotas: `#/` (início), `#/buzzer` (ajustes), `#/buzzer/jogar` (jogo; `?relampago` usa o padrão), `#/placar`, `#/sorteio`, `#/cronometro`, `#/equipes`, `#/turmas`, `#/ferramentas`, `#/atividades` (biblioteca), `#/atividades/editar?id=…`, `#/atividades/testar?id=…`, `#/quiz`, `#/passa`, `#/jogar?id=…`, `#/sala`, `#/entrar`, `#/relatorios`, `#/cartoes`, `#/roleta`, `#/sessao`, `#/importar?d=…`, `#/sobre` (Sobre e créditos), `#/vitrine` (todos os componentes).
 
 ## Design system: "caderno neo-brutalista"
 

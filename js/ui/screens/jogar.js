@@ -6,6 +6,7 @@ import { lerAtividade } from '../../storage/atividades.js';
 import { ler } from '../../storage/db.js';
 import { CORES_JOGADORES } from '../buzzer-ajustes.js';
 import { Stepper } from '../components/stepper.js';
+import { Switch } from '../components/switch.js';
 import { Botao } from '../components/botao.js';
 import { icones } from '../components/icones.js';
 import { nomeModalidade } from './atividades.js';
@@ -57,6 +58,7 @@ export function render(alvo, params) {
     desenhar();
     const stepper = Stepper({ rotulo: ehPassa ? t('placar.quantas') : t('jogar.quantos'), valor: quantidade, min, max, aoMudar: (v) => ((quantidade = v), desenhar()) });
 
+    let ausente = false;
     const usarGeradas =
       geradas.length >= min
         ? Botao({
@@ -73,7 +75,7 @@ export function render(alvo, params) {
     const comecar = () => {
       const participantes = Array.from({ length: quantidade }, (_, i) => ({ id: `p${i + 1}`, nome: (nomes[i] ?? '').trim() || rotuloN(i), cor: CORES_JOGADORES[i % 8] }));
       alvo.replaceChildren();
-      limpar = ehPassa ? jogarPassaRepassa(alvo, a, participantes) : jogarQuiz(alvo, a, participantes);
+      limpar = ehPassa ? jogarPassaRepassa(alvo, a, participantes) : jogarQuiz(alvo, a, participantes, { ausente });
     };
 
     alvo.append(
@@ -88,6 +90,7 @@ export function render(alvo, params) {
         usarGeradas,
         lista
       ),
+      ehPassa ? null : h('section', { class: 'cartao pilha secao' }, Switch({ rotulo: t('jogar.ausente'), ligado: false, aoMudar: (v) => (ausente = v) }), h('p', { class: 'texto-suave dica' }, t('jogar.ausenteDica'))),
       h('div', { class: 'linha buzzer-rodape' }, Botao({ texto: t('jogar.comecar'), variante: 'primario', tamanho: 'grande', icone: 'raio', aoClicar: comecar }))
     );
   });

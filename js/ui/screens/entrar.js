@@ -3,6 +3,7 @@
 import { h, svg } from '../dom.js';
 import { t } from '../../i18n/i18n.js';
 import { validarNome, gerarApelido } from '../../core/nomes.js';
+import { limparPalavra } from '../../core/nuvem.js';
 import { normalizarCodigo, codigoValido } from '../../core/sala.js';
 import { lerNumero } from '../../core/questions/base.js';
 import { formatarMs } from '../../core/clock.js';
@@ -133,6 +134,37 @@ export function render(alvo, params) {
     if (e.tipo === 'buzzer') return buzzer(e);
     if (e.tipo === 'espiral') return espiral(e);
     if (e.tipo === 'prova') return provaIndividual(e);
+    if (e.tipo === 'nuvem') return nuvemAluno(e);
+  }
+
+  // ---------- Nuvem de palavras ----------
+  let chaveNuvem = '';
+  function nuvemAluno(e) {
+    const chave = `${e.aberta}|${e.enviadas}|${e.pergunta}`;
+    if (chave === chaveNuvem) return;
+    chaveNuvem = chave;
+    const restam = Math.max(0, e.maximo - e.enviadas);
+    if (!e.aberta) return trocar(h('p', { class: 'aluno__aguarde' }, t('nuvem.fechadaAluno')));
+    if (!restam) return trocar(h('div', { class: 'aluno__lobby pilha' }, Mascote({ humor: 'feliz', tamanho: '6rem' }), h('h1', { tabindex: '-1', class: 'manuscrito' }, t('nuvem.obrigado')), h('p', null, t('nuvem.olheTela'))));
+    const campo = h('input', { id: 'nuvem-palavra', class: 'campo aluno__campo', maxlength: 30, autocomplete: 'off', enterkeyhint: 'send' });
+    const erro = h('p', { class: 'erro-texto', role: 'alert' });
+    const enviar = () => {
+      const l = limparPalavra(campo.value);
+      if (!l) return (erro.textContent = t('nuvem.invalida'));
+      cliente.agir('nuvem', { palavras: [campo.value.trim()] });
+      sons.registro();
+      erro.textContent = '';
+      campo.value = '';
+    };
+    campo.addEventListener('keydown', (ev) => ev.key === 'Enter' && enviar());
+    trocar(
+      h('p', { class: 'etiqueta' }, t('nuvem.restam', { n: restam })),
+      h('h1', { class: 'aluno__enunciado', tabindex: '-1' }, e.pergunta),
+      h('label', { for: 'nuvem-palavra', class: 'rotulo' }, t('nuvem.suaPalavra')),
+      campo,
+      erro,
+      Botao({ texto: t('nuvem.enviar'), variante: 'primario', bloco: true, aoClicar: enviar })
+    );
   }
 
   const mmss = (ms) => `${Math.floor(ms / 60000)}:${String(Math.floor((ms % 60000) / 1000)).padStart(2, '0')}`;

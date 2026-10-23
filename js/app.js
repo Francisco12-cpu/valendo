@@ -27,6 +27,11 @@ const ROTAS = {
   '/passa': () => import('./ui/screens/jogos.js'),
   '/sala': () => import('./ui/screens/sala.js'),
   '/entrar': () => import('./ui/screens/entrar.js'),
+  '/relatorios': () => import('./ui/screens/relatorios.js'),
+  '/cartoes': () => import('./ui/screens/cartoes.js'),
+  '/roleta': () => import('./ui/screens/roleta.js'),
+  '/sessao': () => import('./ui/screens/sessao.js'),
+  '/importar': () => import('./ui/screens/importar.js'),
 };
 const naoEncontrado = () => import('./ui/screens/nao-encontrado.js');
 
@@ -54,6 +59,8 @@ async function navegar() {
   const params = new URLSearchParams(location.hash.split('?')[1] || '');
 
   if (limparTela) limparTela();
+  // Modal aberto não sobrevive à troca de tela.
+  document.querySelectorAll('dialog.modal[open]').forEach((d) => d.close());
   conteudo.replaceChildren();
   limparTela = tela.render(conteudo, params) || null;
 
@@ -73,7 +80,49 @@ async function navegar() {
     if (titulo) titulo.focus({ preventScroll: true });
   }
   primeiraRota = false;
+  desenharBarraSessao();
 }
+
+// ---------- Sessão (sequência de etapas): barra fixa em qualquer tela ----------
+const barraSessao = h('nav', { class: 'barra-sessao', 'aria-label': t('sessao.barra'), hidden: true });
+document.body.append(barraSessao);
+
+async function desenharBarraSessao() {
+  const { lerSessao } = await import('./ui/screens/sessao.js');
+  const { salvar } = await import('./storage/db.js');
+  const s = await lerSessao();
+  if (!s.ativa || !s.etapas.length) {
+    barraSessao.hidden = true;
+    document.body.classList.remove('com-sessao');
+    return;
+  }
+  const ir = async (i) => {
+    if (i >= s.etapas.length) {
+      s.ativa = false;
+      await salvar('sessoes', s);
+      toast(t('sessao.terminou'), { tipo: 'sucesso' });
+      location.hash = '#/sessao';
+      return;
+    }
+    s.atual = Math.max(0, i);
+    await salvar('sessoes', s);
+    location.hash = s.etapas[s.atual].rota;
+  };
+  const botao = (texto, fn, extra = {}) => ativarAfundar(h('button', { type: 'button', class: `botao ${extra.classe ?? ''}`, disabled: extra.desativado, onClick: fn }, texto));
+  barraSessao.replaceChildren(
+    h('span', { class: 'barra-sessao__info' }, t('sessao.etapaDe', { n: s.atual + 1, total: s.etapas.length }), ' · ', h('strong', null, s.etapas[s.atual].titulo)),
+    botao(t('provaInd.anterior'), () => ir(s.atual - 1), { desativado: s.atual === 0 }),
+    botao(s.atual + 1 < s.etapas.length ? t('sessao.proxima') : t('sessao.encerrar'), () => ir(s.atual + 1), { classe: 'botao--primario' }),
+    botao(t('sessao.sair'), async () => {
+      s.ativa = false;
+      await salvar('sessoes', s);
+      desenharBarraSessao();
+    }, { classe: 'botao--fantasma' })
+  );
+  barraSessao.hidden = false;
+  document.body.classList.add('com-sessao');
+}
+window.addEventListener('valendo:sessao', desenharBarraSessao);
 
 // ---------- Tema: automático → claro → quadro-negro ----------
 const TEMAS = ['auto', 'claro', 'quadro'];

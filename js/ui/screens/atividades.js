@@ -11,6 +11,8 @@ import { abrirModal } from '../components/modal.js';
 import { toast } from '../components/toast.js';
 import { icones } from '../components/icones.js';
 import { Mascote } from '../components/mascote.js';
+import { QRCodigo } from '../components/qr.js';
+import { codificarAtividade } from '../../core/compartilhar.js';
 
 export const titulo = () => t('atividades.titulo');
 
@@ -138,6 +140,7 @@ export function render(alvo) {
       else carregar();
       return;
     }
+    if (acao === 'compartilhar') return compartilhar(a);
     if (acao === 'json') return baixar(`${nomeDeArquivo(a.titulo)}.valendo.json`, exportarJSON([a]));
     if (acao === 'csv') return baixar(`${nomeDeArquivo(a.titulo)}.csv`, exportarCSV(a), 'text/csv');
     if (acao === 'apagar') {
@@ -156,6 +159,30 @@ export function render(alvo) {
     }
   }
 
+  // Link com a atividade dentro (compactada). Cabe num QR se for pequena.
+  async function compartilhar(a) {
+    const codigo = await codificarAtividade(a);
+    const link = `${location.origin}${location.pathname}#/importar?d=${codigo}`;
+    const campo = h('textarea', { class: 'campo campo--area', rows: 3, readonly: true, 'aria-label': t('atividades.link') });
+    campo.value = link;
+    const copiar = Botao({
+      texto: t('atividades.copiarLink'),
+      variante: 'primario',
+      aoClicar: async () => {
+        try {
+          await navigator.clipboard.writeText(link);
+          toast(t('equipes.copiado'), { tipo: 'sucesso' });
+        } catch {
+          campo.select();
+        }
+      },
+    });
+    abrirModal({
+      titulo: t('atividades.compartilhar'),
+      conteudo: h('div', { class: 'pilha' }, h('p', { class: 'texto-suave' }, t('atividades.compartilharDica')), link.length <= 2200 ? QRCodigo(link, { tamanho: '17rem', rotulo: t('atividades.qrLink') }) : h('p', { class: 'texto-suave' }, t('atividades.grandeParaQR')), campo, copiar),
+    });
+  }
+
   // ---------- Lista ----------
   function cartao(a) {
     if (a.erro) {
@@ -172,6 +199,7 @@ export function render(alvo) {
       h('option', { value: '' }, t('atividades.mais')),
       h('option', { value: 'copia' }, t('atividades.editarCopia')),
       h('option', { value: 'duplicar' }, t('atividades.duplicar')),
+      h('option', { value: 'compartilhar' }, t('atividades.compartilhar')),
       h('option', { value: 'json' }, t('atividades.exportarJSON')),
       h('option', { value: 'csv' }, t('atividades.exportarCSV')),
       h('option', { value: 'apagar' }, t('atividades.apagar')),

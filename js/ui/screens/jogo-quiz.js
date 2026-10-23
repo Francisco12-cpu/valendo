@@ -14,6 +14,8 @@ import { sons, desbloquear } from '../../audio/sons.js';
 import { MARCAS } from '../questoes.js';
 import { Botao } from '../components/botao.js';
 import { Mascote } from '../components/mascote.js';
+import { baixarImagemResultado } from '../imagem-resultado.js';
+import { normalizarResultado } from '../../core/relatorio.js';
 import { icones } from '../components/icones.js';
 
 const agora = () => performance.now();
@@ -95,6 +97,18 @@ export function jogarQuiz(alvo, atividade, participantes, opcoes = {}) {
   }
 
   // ---------- Telas ----------
+  // Modo professor ausente: cada tela avança sozinha (o projetor roda o quiz sem ninguém).
+  let ausenteTimer = null;
+  const ESPERA_AUSENTE = { abertura: 6000, revelacao: 9000, ranking: 6000 };
+  function agendarAusente() {
+    clearTimeout(ausenteTimer);
+    const espera = p.fase === Q.FASES.PERGUNTA && !Q.tempoLimite(p) ? 30000 : ESPERA_AUSENTE[p.fase];
+    if (!espera) return;
+    const fase = p.fase;
+    const indice = p.indice;
+    ausenteTimer = setTimeout(() => p.fase === fase && p.indice === indice && avancar(), espera);
+  }
+
   function desenhar(trocouTela) {
     const q = Q.perguntaAtual(p);
     progresso.textContent = q && p.fase !== Q.FASES.FIM ? t('testar.progresso', { i: p.indice + 1, n: p.perguntas.length }) : t('jogar.nPerguntas', { n: p.perguntas.length });
@@ -107,6 +121,7 @@ export function jogarQuiz(alvo, atividade, participantes, opcoes = {}) {
     else if (p.fase === Q.FASES.RANKING) telaRanking();
     else telaFim();
     corpo.querySelector('.palco__principal')?.focus({ preventScroll: true });
+    if (opcoes.ausente) agendarAusente();
   }
 
   function botaoPrincipal(texto) {
@@ -371,6 +386,7 @@ export function jogarQuiz(alvo, atividade, participantes, opcoes = {}) {
               opcoes.aoMudar?.(p);
             },
           }),
+          Botao({ texto: t('relatorio.imagem'), aoClicar: () => baixarImagemResultado(normalizarResultado({ ...Q.resumo(p, atividade) })) }),
           h('a', { class: 'botao', href: sairHref }, t('editor.voltar'))
         )
       )
@@ -399,6 +415,7 @@ export function jogarQuiz(alvo, atividade, participantes, opcoes = {}) {
 
   return () => {
     clearInterval(relogio);
+    clearTimeout(ausenteTimer);
     document.removeEventListener('keydown', teclado);
     document.body.classList.remove('modo-palco');
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});

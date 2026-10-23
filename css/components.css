@@ -4034,3 +4034,441 @@ body.modo-aluno .conteudo {
 .aluno .pilha > .etiqueta {
   justify-self: start;
 }
+
+/* =========================================================
+   Fase 7 — extras
+   ========================================================= */
+
+/* Gráfico de barras (série única) */
+.grafico {
+  display: grid;
+  gap: var(--esp-3);
+  margin: 0;
+}
+
+.grafico__titulo {
+  display: grid;
+  gap: 0.1rem;
+  font-weight: 700;
+  font-size: var(--fs-m);
+}
+
+.grafico__desc {
+  font-size: var(--fs-p);
+  font-weight: 500;
+}
+
+.grafico__area {
+  position: relative;
+}
+
+.grafico__svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.grafico__grade {
+  stroke: var(--grafico-grade);
+  stroke-width: 1;
+}
+
+.grafico__eixo,
+.grafico__valor {
+  fill: var(--tinta-suave);
+  font-size: 12px;
+  font-family: var(--fonte-corpo);
+  font-variant-numeric: tabular-nums;
+}
+
+.grafico__valor {
+  fill: var(--tinta);
+  font-weight: 700;
+}
+
+.grafico__rotulo {
+  fill: var(--tinta);
+  font-size: 13px;
+  font-family: var(--fonte-corpo);
+}
+
+.grafico__alvo {
+  fill: transparent;
+}
+
+.grafico__barra {
+  fill: var(--grafico);
+}
+
+.grafico__zero {
+  stroke: var(--grafico);
+  stroke-width: 2;
+}
+
+.grafico__item {
+  outline: none;
+  cursor: default;
+}
+
+.grafico__item.esta-ativo .grafico__alvo,
+.grafico__item:focus-visible .grafico__alvo {
+  fill: color-mix(in srgb, var(--grafico) 10%, transparent);
+}
+
+.grafico__item:focus-visible .grafico__alvo {
+  stroke: var(--foco);
+  stroke-width: 2;
+}
+
+.grafico__dica {
+  position: absolute;
+  z-index: 2;
+  max-width: 18rem;
+  padding: var(--esp-1) var(--esp-2);
+  background: var(--superficie);
+  color: var(--tinta);
+  border: 2px solid var(--tinta);
+  border-radius: 8px;
+  box-shadow: 2px 2px 0 var(--cor-sombra);
+  font-size: var(--fs-p);
+  pointer-events: none;
+}
+
+.grafico__tabela summary {
+  min-height: var(--alvo);
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.grafico__tabela table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-p);
+}
+
+.grafico__tabela th,
+.grafico__tabela td {
+  padding: var(--esp-1) var(--esp-2);
+  border-bottom: 1px solid var(--linha-caderno);
+  text-align: left;
+}
+
+.grafico__tabela td {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Relatórios */
+.relatorio-cartao {
+  display: grid;
+  gap: var(--esp-1);
+  color: var(--tinta);
+  text-decoration: none;
+}
+
+.relatorio-cartao .etiqueta {
+  justify-self: start;
+}
+
+.relatorio-cartao__titulo {
+  font-size: 1.9rem;
+  line-height: 1.05;
+}
+
+.relatorio-numeros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+  gap: var(--esp-3);
+  margin-top: var(--esp-5);
+}
+
+.relatorio-numero {
+  display: grid;
+  gap: 0.1rem;
+  padding: var(--esp-4);
+  background: var(--superficie);
+  border: var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+}
+
+.relatorio-numero__valor {
+  font-size: clamp(2.2rem, 1.6rem + 2vw, 3.2rem);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.relatorio-erradas {
+  display: grid;
+  gap: var(--esp-2);
+  padding-left: 1.4rem;
+}
+
+.relatorio-erradas li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-2);
+}
+
+/* Roleta */
+.roleta {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--esp-4);
+  text-align: center;
+}
+
+.roleta__roda {
+  width: min(100%, 26rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  box-shadow: var(--sombra);
+}
+
+.roleta__roda svg {
+  width: 100%;
+  height: 100%;
+}
+
+.roleta__seta {
+  width: 0;
+  height: 0;
+  margin-bottom: calc(-1 * var(--esp-5));
+  border-left: 16px solid transparent;
+  border-right: 16px solid transparent;
+  border-top: 28px solid var(--tinta);
+  z-index: 1;
+}
+
+.roleta__resultado {
+  min-height: 1.2em;
+  font-size: var(--fs-mega);
+  line-height: 1;
+}
+
+body.modo-projetor .roleta__roda {
+  width: min(100%, 60vh);
+}
+
+/* Sessão */
+.sessao-etapas {
+  display: grid;
+  gap: var(--esp-2);
+  padding: 0;
+  list-style: none;
+}
+
+.sessao-etapa {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-3);
+  padding: var(--esp-2) var(--esp-3);
+  border: 2px solid var(--tinta);
+  border-radius: 10px;
+  background: var(--superficie);
+}
+
+.sessao-etapa[aria-current="step"] {
+  background: color-mix(in srgb, var(--amarelo) 40%, var(--superficie));
+}
+
+.sessao-etapa__nome {
+  flex: 1;
+  min-width: 0;
+  font-weight: 700;
+}
+
+.barra-sessao {
+  position: fixed;
+  left: 50%;
+  bottom: max(var(--esp-3), env(safe-area-inset-bottom));
+  z-index: 40;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--esp-2);
+  width: min(46rem, calc(100% - 1rem));
+  padding: var(--esp-2) var(--esp-3);
+  background: var(--superficie);
+  border: var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  transform: translateX(-50%);
+}
+
+.barra-sessao__info {
+  flex: 1 1 12rem;
+  font-size: var(--fs-p);
+}
+
+body.com-sessao .conteudo {
+  padding-bottom: 8rem;
+}
+
+body.com-sessao .toasts {
+  bottom: 7rem;
+}
+
+/* Nuvem de palavras */
+.nuvem__pergunta {
+  font-size: clamp(2rem, 1.5rem + 2.5vw, 3.5rem);
+}
+
+.nuvem__palco {
+  min-height: 50vh;
+  display: grid;
+  place-items: center;
+  padding: var(--esp-6) var(--esp-5) var(--esp-6) 3.4rem;
+}
+
+.nuvem {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--esp-2) var(--esp-4);
+  max-width: 60rem;
+}
+
+.nuvem__palavra {
+  padding: 0.05em 0.3em;
+  font-family: var(--fonte-titulo);
+  font-size: var(--tamanho);
+  font-weight: 700;
+  line-height: 1.1;
+  background: linear-gradient(transparent 55%, color-mix(in srgb, var(--cor) 70%, transparent) 55%);
+  animation: aparecer 300ms ease-out both;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+/* Importar */
+.importar-lista {
+  display: grid;
+  gap: var(--esp-2);
+  padding-left: 2.2rem;
+}
+
+/* Cartões de resposta */
+.cartoes-folha {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: var(--esp-4);
+}
+
+.cartao-resposta {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  padding: 2.4rem;
+  background: #FFFFFF;
+  color: #141414;
+  border: 2px dashed #141414;
+  border-radius: 8px;
+  break-inside: avoid;
+}
+
+.cartao-resposta__qr {
+  width: 100%;
+}
+
+.cartao-resposta__qr .qr {
+  width: 100%;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+.cartao-resposta__letra {
+  position: absolute;
+  font-family: var(--fonte-corpo);
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.cartao-resposta__letra--0 { top: 0.2rem; left: 50%; transform: translateX(-50%); }
+.cartao-resposta__letra--1 { right: 0.5rem; top: 50%; transform: translateY(-50%) rotate(90deg); }
+.cartao-resposta__letra--2 { bottom: 0.2rem; left: 50%; transform: translateX(-50%) rotate(180deg); }
+.cartao-resposta__letra--3 { left: 0.5rem; top: 50%; transform: translateY(-50%) rotate(-90deg); }
+
+.cartao-resposta__numero {
+  position: absolute;
+  top: 0.4rem;
+  left: 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.cartoes-leitura {
+  display: grid;
+  gap: var(--esp-5);
+  align-items: start;
+}
+
+.cartoes-qtd {
+  margin-left: auto;
+  padding: 0 0.6rem;
+  background: #FFFFFF;
+  border: 2px solid #141414;
+  border-radius: 999px;
+}
+
+.cartoes-lidos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-1);
+  padding: 0;
+  list-style: none;
+}
+
+.cartoes-lidos__item {
+  min-width: 2.2rem;
+  padding: 0.1rem 0.4rem;
+  border: 2px solid var(--tinta);
+  border-radius: 6px;
+  text-align: center;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 1024px) {
+  .cartoes-leitura {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+@media print {
+  body.modo-impressao * {
+    visibility: hidden;
+  }
+
+  body.modo-impressao .cartoes-folha,
+  body.modo-impressao .cartoes-folha * {
+    visibility: visible;
+  }
+
+  body.modo-impressao .cartoes-folha {
+    position: absolute;
+    inset: 0;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6mm;
+  }
+
+  body.modo-impressao {
+    background: #FFFFFF;
+  }
+}

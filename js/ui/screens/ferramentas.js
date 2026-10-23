@@ -10,6 +10,10 @@ const ITENS = [
   { id: 'placar', icone: 'placar', cor: 'var(--cor-placar)', href: '#/placar' },
   { id: 'sorteio', icone: 'sorteio', cor: 'var(--cor-sorteio)', href: '#/sorteio' },
   { id: 'buzzer', icone: 'buzzer', cor: 'var(--cor-buzzer)', href: '#/buzzer' },
+  { id: 'roleta', icone: 'sorteio', cor: 'var(--cor-quiz)', href: '#/roleta' },
+  { id: 'cartoes', icone: 'provas', cor: 'var(--amarelo)', href: '#/cartoes' },
+  { id: 'relatorios', icone: 'placar', cor: 'var(--cor-espiral)', href: '#/relatorios' },
+  { id: 'sessao', icone: 'raio', cor: 'var(--cor-ferramentas)', href: '#/sessao' },
 ];
 
 export const titulo = () => t('ferramentas.titulo');

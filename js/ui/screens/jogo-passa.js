@@ -198,7 +198,7 @@ export function jogarPassaRepassa(alvo, atividade, equipes) {
         modalidade: atividade.modalidade,
         data: new Date().toISOString(),
         participantes: final.map(({ id, nome: n, pontos, posicao, tortas }) => ({ id, nome: n, pontos, posicao, tortas })),
-        historico: j.historico,
+        historico: j.historico.map((x) => ({ ...x, enunciado: j.perguntas.find((q) => q.id === x.pergunta)?.enunciado })),
       });
     }
   }
