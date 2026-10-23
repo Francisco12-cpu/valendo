@@ -2,7 +2,7 @@
 
 Caixa de ferramentas **gratuita e de código aberto** para a sala de aula: buzzer, placar, sorteio, quiz, prova em espiral e muito mais. Funciona no celular, no tablet e no computador, **sem internet, sem conta e sem coletar dados**.
 
-> Status: **todas as fases do plano (0 a 7) prontas.** Veja o plano completo em [`PLANO-VALENDO.md`](PLANO-VALENDO.md). Quiz, Passa ou Repassa, Espiral e Provas aparecem como "Em breve" e chegam nas próximas fases. Veja o plano completo em [`PLANO-VALENDO.md`](PLANO-VALENDO.md).
+> Status: **todas as fases do plano (0 a 7) prontas.**
 
 ## Buzzer
 
@@ -93,37 +93,19 @@ Abertas pela **Sala com celulares** (pastas Espiral e Provas na tela inicial):
 
 Precisão: os toques usam `pointerdown`/`pointerup` com `event.timeStamp`, multitoque por `pointerId`, e a largada é marcada no frame do `requestAnimationFrame` em que o sinal aparece, com o som tocando no mesmo instante (WebAudio).
 
-## Como rodar localmente
+## Como rodar no computador
 
-Não há instalação nem etapa de build: são arquivos estáticos (HTML, CSS e JavaScript puro com ES Modules). Só é preciso servir a pasta por HTTP — abrir o `index.html` direto (`file://`) não funciona, porque módulos e service worker exigem um servidor.
-
-**No Windows:** dê dois cliques em `iniciar.bat`. Ele sobe o servidor e abre o navegador.
-
-Ou, em qualquer sistema, escolha um:
+Não há instalação nem etapa de build: são arquivos estáticos (HTML, CSS e JavaScript puro com ES Modules). Só é preciso servir a pasta por HTTP — abrir o `index.html` direto (`file://`) não funciona, porque módulos e service worker exigem um servidor. Por exemplo:
 
 ```bash
-# Python (já vem no Windows com Python, no macOS e no Linux)
-python -m http.server 8080
-
-# ou Node
-npx serve -l 8080 .
+python -m http.server 8080      # depois abra http://localhost:8080
 ```
-
-Depois abra <http://localhost:8080>.
-
-### Testes
-
-```bash
-node --test        # ou: npm test
-```
-
-Os testes cobrem a máquina de estados do buzzer (queima, empate e multitoque) e conferem, entre outras coisas, que todo arquivo do app está no cache offline, que `/js/core` não usa DOM nem rede, que as chaves de tradução existem e que os créditos estão no lugar.
 
 ## Funciona offline
 
 Na primeira visita o service worker (`sw.js`) guarda o app inteiro no aparelho. A partir daí ele abre mesmo sem internet. Pode também ser **instalado** como app (PWA) pelo menu do navegador.
 
-Ao publicar uma versão nova, troque `VERSAO` em `sw.js` **e** em `js/config.js`, e mantenha a lista `ARQUIVOS` do `sw.js` atualizada (o teste avisa se faltar algo).
+Ao publicar uma versão nova, troque `VERSAO` em `sw.js` **e** em `js/config.js`, e mantenha a lista `ARQUIVOS` do `sw.js` com todos os arquivos do app.
 
 ## Publicar no GitHub Pages
 
@@ -154,7 +136,6 @@ js/core/questions/    um arquivo por tipo de questão (plugin)
 js/audio/             sons gerados com WebAudio
 js/storage/           IndexedDB (turmas e sessões) e preferências
 assets/               ícones e fontes locais
-tests/                testes com node --test
 ```
 
 Rotas: `#/` (início), `#/buzzer` (ajustes), `#/buzzer/jogar` (jogo; `?relampago` usa o padrão), `#/placar`, `#/sorteio`, `#/cronometro`, `#/equipes`, `#/turmas`, `#/ferramentas`, `#/atividades` (biblioteca), `#/atividades/editar?id=…`, `#/atividades/testar?id=…`, `#/quiz`, `#/passa`, `#/jogar?id=…`, `#/sala`, `#/entrar`, `#/relatorios`, `#/cartoes`, `#/roleta`, `#/sessao`, `#/importar?d=…`, `#/sobre` (Sobre e créditos), `#/vitrine` (todos os componentes).

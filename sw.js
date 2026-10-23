@@ -1,7 +1,7 @@
 // Service worker do Valendo!: guarda o app inteiro no aparelho para funcionar offline.
 // Ao publicar uma versão nova, troque VERSAO (e em js/config.js) e mantenha ARQUIVOS em dia
-// — o teste tests/fase0.test.js confere se todos existem.
-const VERSAO = '0.8.1';
+// (todo arquivo do app precisa estar na lista para funcionar offline).
+const VERSAO = '0.8.2';
 const CACHE = `valendo-${VERSAO}`;
 
 const ARQUIVOS = [
