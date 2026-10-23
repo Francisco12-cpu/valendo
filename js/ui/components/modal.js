@@ -18,7 +18,7 @@ export function abrirModal({ titulo, conteudo, acoes = [] }) {
       dialogo.close();
     };
 
-    dialogo.append(
+    const partes = [
       h(
         'div',
         { class: 'modal__topo' },
@@ -32,8 +32,9 @@ export function abrirModal({ titulo, conteudo, acoes = [] }) {
             { class: 'modal__acoes' },
             acoes.map((a) => Botao({ texto: a.texto, variante: a.variante, aoClicar: () => fechar(a.valor) }))
           )
-        : null
-    );
+        : null,
+    ];
+    dialogo.append(...partes.filter(Boolean)); // append nativo escreveria "null"
 
     // Toque no fundo escuro fecha.
     dialogo.addEventListener('click', (e) => {

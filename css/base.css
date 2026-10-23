@@ -111,6 +111,10 @@ h1:focus {
 }
 
 /* ---------- Utilitários ---------- */
+[hidden] {
+  display: none !important;
+}
+
 .sr-only {
   position: absolute !important;
   width: 1px;

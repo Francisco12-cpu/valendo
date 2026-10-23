@@ -5,18 +5,20 @@ import { icones } from './ui/components/icones.js';
 import { ativarAfundar } from './ui/components/botao.js';
 import { toast } from './ui/components/toast.js';
 import * as inicio from './ui/screens/inicio.js';
-import * as sobre from './ui/screens/sobre.js';
-import * as vitrine from './ui/screens/vitrine.js';
-import * as naoEncontrado from './ui/screens/nao-encontrado.js';
 
+// A tela inicial vem junto; as outras carregam quando abertas (todas ficam no cache offline).
 const ROTAS = {
-  '/': inicio,
-  '/sobre': sobre,
-  '/vitrine': vitrine,
+  '/': () => inicio,
+  '/sobre': () => import('./ui/screens/sobre.js'),
+  '/vitrine': () => import('./ui/screens/vitrine.js'),
+  '/buzzer': () => import('./ui/screens/buzzer.js'),
+  '/buzzer/jogar': () => import('./ui/screens/buzzer-jogo.js'),
 };
+const naoEncontrado = () => import('./ui/screens/nao-encontrado.js');
 
 const conteudo = document.getElementById('conteudo');
 let primeiraRota = true;
+let limparTela = null; // telas podem devolver uma função de limpeza (timers, ouvintes...)
 
 // ---------- Router ----------
 function rotaAtual() {
@@ -25,15 +27,21 @@ function rotaAtual() {
   return hash.slice(1).split('?')[0].replace(/\/+$/, '') || '/';
 }
 
-function navegar() {
+let navegacao = 0;
+
+async function navegar() {
   // Âncoras comuns (ex.: #conteudo) não são rotas: ignora.
   if (location.hash && !location.hash.startsWith('#/')) return;
 
   const caminho = rotaAtual();
-  const tela = ROTAS[caminho] || naoEncontrado;
+  const minha = ++navegacao;
+  const tela = await (ROTAS[caminho] || naoEncontrado)();
+  if (minha !== navegacao) return; // o usuário já foi para outra tela
+  const params = new URLSearchParams(location.hash.split('?')[1] || '');
 
+  if (limparTela) limparTela();
   conteudo.replaceChildren();
-  tela.render(conteudo);
+  limparTela = tela.render(conteudo, params) || null;
 
   const nome = tela.titulo();
   document.title = tela === inicio ? `${t('app.nome')} — ${t('inicio.titulo', { destaque: t('inicio.tituloDestaque') })}` : `${nome} · ${t('app.nome')}`;

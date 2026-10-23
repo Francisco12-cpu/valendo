@@ -2,7 +2,22 @@
 
 Caixa de ferramentas **gratuita e de código aberto** para a sala de aula: buzzer, placar, sorteio, quiz, prova em espiral e muito mais. Funciona no celular, no tablet e no computador, **sem internet, sem conta e sem coletar dados**.
 
-> Status: **Fase 0 — Fundação** concluída (design system, navegação, offline). As modalidades aparecem na tela inicial como "Em breve" e chegam nas próximas fases. Veja o plano completo em [`PLANO-VALENDO.md`](PLANO-VALENDO.md).
+> Status: **Fase 1 — Buzzer** pronta (e a Fase 0, fundação). As outras modalidades aparecem na tela inicial como "Em breve" e chegam nas próximas fases. Veja o plano completo em [`PLANO-VALENDO.md`](PLANO-VALENDO.md).
+
+## Buzzer
+
+Quem responde primeiro, num aparelho só, sem internet.
+
+- **Valendo relâmpago:** um toque na tela inicial abre o buzzer com 2 jogadores e o padrão aplicado.
+- **2 a 8 jogadores**, com áreas que se reorganizam em retrato e paisagem. Com o aparelho deitado na mesa, as áreas ficam de frente para cada aluno (giradas 180° ou 90°).
+- **Dois métodos:** *aperta primeiro* (B) ou *segura e solta primeiro* (A).
+- **Largada:** espera surpresa (aleatória), contagem 3-2-1 ou manual pelo professor; sinal com som e tela, só tela ou só som.
+- **Queima de largada** com regra configurável: aviso, anular a rodada, penalidade de tempo, eliminar ou o professor decide.
+- **Empate técnico** quando a diferença é menor que a margem (padrão 10 ms), com botão de desempate.
+- **Juiz de dúvida:** ordem de todos e a diferença em milissegundos.
+- **Atalhos:** Espaço = largada / de novo, F = tela cheia, Esc = sair.
+
+Precisão: os toques usam `pointerdown`/`pointerup` com `event.timeStamp`, multitoque por `pointerId`, e a largada é marcada no frame do `requestAnimationFrame` em que o sinal aparece, com o som tocando no mesmo instante (WebAudio).
 
 ## Como rodar localmente
 
@@ -28,7 +43,7 @@ Depois abra <http://localhost:8080>.
 node --test        # ou: npm test
 ```
 
-Os testes conferem, entre outras coisas, que todo arquivo do app está no cache offline, que `/js/core` não usa DOM nem rede, que as chaves de tradução existem e que os créditos estão no lugar.
+Os testes cobrem a máquina de estados do buzzer (queima, empate e multitoque) e conferem, entre outras coisas, que todo arquivo do app está no cache offline, que `/js/core` não usa DOM nem rede, que as chaves de tradução existem e que os créditos estão no lugar.
 
 ## Funciona offline
 
@@ -55,12 +70,14 @@ js/app.js             boot + router + tema
 js/i18n/              textos da interface (pt-BR)
 js/ui/components/     botão, cartão-pasta, modal, toast, post-it, switch, stepper, mascote
 js/ui/screens/        início, sobre, vitrine, 404
-js/core/              lógica pura, sem DOM e sem rede (a partir da Fase 1)
+js/core/              lógica pura, sem DOM e sem rede: clock.js e buzzer.js (máquina de estados)
+js/audio/             sons gerados com WebAudio
+js/storage/           preferências no aparelho
 assets/               ícones e fontes locais
 tests/                testes com node --test
 ```
 
-Rotas: `#/` (início), `#/sobre` (Sobre e créditos), `#/vitrine` (todos os componentes).
+Rotas: `#/` (início), `#/buzzer` (ajustes), `#/buzzer/jogar` (jogo; `?relampago` usa o padrão), `#/sobre` (Sobre e créditos), `#/vitrine` (todos os componentes).
 
 ## Design system: "caderno neo-brutalista"
 

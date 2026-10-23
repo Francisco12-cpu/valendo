@@ -1,7 +1,7 @@
 // Service worker do Valendo!: guarda o app inteiro no aparelho para funcionar offline.
 // Ao publicar uma versão nova, troque VERSAO (e em js/config.js) e mantenha ARQUIVOS em dia
 // — o teste tests/fase0.test.js confere se todos existem.
-const VERSAO = '0.1.0';
+const VERSAO = '0.2.0';
 const CACHE = `valendo-${VERSAO}`;
 
 const ARQUIVOS = [
@@ -14,10 +14,16 @@ const ARQUIVOS = [
   './css/components.css',
   './js/app.js',
   './js/config.js',
+  './js/core/clock.js',
+  './js/core/buzzer.js',
+  './js/audio/sons.js',
+  './js/storage/preferencias.js',
+  './js/ui/buzzer-ajustes.js',
   './js/i18n/i18n.js',
   './js/i18n/pt-BR.js',
   './js/ui/dom.js',
   './js/ui/components/botao.js',
+  './js/ui/components/escolha.js',
   './js/ui/components/icones.js',
   './js/ui/components/mascote.js',
   './js/ui/components/modal.js',
@@ -26,6 +32,8 @@ const ARQUIVOS = [
   './js/ui/components/stepper.js',
   './js/ui/components/switch.js',
   './js/ui/components/toast.js',
+  './js/ui/screens/buzzer.js',
+  './js/ui/screens/buzzer-jogo.js',
   './js/ui/screens/inicio.js',
   './js/ui/screens/nao-encontrado.js',
   './js/ui/screens/sobre.js',

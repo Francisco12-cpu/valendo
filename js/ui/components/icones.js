@@ -21,5 +21,8 @@ export const icones = {
   aviso: base('<path d="M24 6l20 35H4z"/><path d="M24 19v10"/><circle cx="24" cy="35" r="1.2" fill="currentColor"/>'),
   erro: base('<circle cx="24" cy="24" r="18"/><path d="M17 17l14 14M31 17L17 31"/>'),
   tema: base('<circle cx="24" cy="24" r="16"/><path d="M24 8a16 16 0 0 1 0 32z" fill="currentColor"/>'),
+  juiz: base('<circle cx="20" cy="20" r="12"/><path d="M29 29l12 12M15 20h10M20 15v10"/>'),
+  telaCheia: base('<path d="M8 18V8h10M30 8h10v10M40 30v10H30M18 40H8V30"/>'),
+  raio: base('<path d="M27 4L10 27h12l-3 17 19-25H26z" fill="currentColor"/>'),
   seta: base('<path d="M4 8c20-2 42 6 52 30"/><path d="M43 34l13 5 4-13"/>', '0 0 64 48'),
 };
