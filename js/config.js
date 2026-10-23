@@ -1,5 +1,5 @@
 // Configurações fixas do app. Ao publicar uma versão nova, atualize VERSAO aqui e em sw.js.
-export const VERSAO = '0.3.0';
+export const VERSAO = '0.4.0';
 
 // Repositório público do projeto (aparece na tela Sobre).
 export const REPOSITORIO = 'https://github.com/Francisco12-cpu/valendo';

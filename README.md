@@ -2,7 +2,7 @@
 
 Caixa de ferramentas **gratuita e de código aberto** para a sala de aula: buzzer, placar, sorteio, quiz, prova em espiral e muito mais. Funciona no celular, no tablet e no computador, **sem internet, sem conta e sem coletar dados**.
 
-> Status: **Fase 2 — Ferramentas rápidas** pronta (e as Fases 0 e 1: fundação e buzzer). Quiz, Passa ou Repassa, Espiral e Provas aparecem como "Em breve" e chegam nas próximas fases. Veja o plano completo em [`PLANO-VALENDO.md`](PLANO-VALENDO.md).
+> Status: **Fase 3 — Editor de atividades e banco de questões** pronta (e as Fases 0 a 2: fundação, buzzer e ferramentas). Quiz, Passa ou Repassa, Espiral e Provas aparecem como "Em breve" e chegam nas próximas fases. Veja o plano completo em [`PLANO-VALENDO.md`](PLANO-VALENDO.md).
 
 ## Buzzer
 
@@ -27,6 +27,18 @@ Tudo funciona offline e fica salvo no aparelho (IndexedDB), mesmo depois de reca
 - **Cronômetro** grande para o projetor: regressivo ou progressivo, tempos prontos, +30 s, aviso nos 10 s finais e alarme com som e tela piscando. Continua certo mesmo se recarregar a página.
 - **Equipes**: aleatórias ou equilibradas por nível (1 a 3), por número de equipes ou por tamanho, ajuste manual, copiar e "usar no placar".
 - **Turmas salvas**: listas de alunos (com nível opcional) para usar no sorteio, nas equipes e no placar. Dá para colar a lista inteira da planilha.
+
+## Atividades e banco de questões
+
+Em **Atividades** (`#/atividades`) o professor monta quizzes, provas e Passa ou Repassa:
+
+- **Tipos de questão:** múltipla escolha (uma ou várias corretas), verdadeiro ou falso, resposta curta (com variações aceitas; ignora acentos e maiúsculas), numérica (com tolerância e unidade), enquete e "slide".
+- **Colar texto e converter:** cole `1) Enunciado` / `a) ...` / `*b) correta` (ou `Resposta: c`, `Resposta: V`, `Resposta: 9,8 ±0,1 m/s²`) e o Valendo! monta as questões.
+- **Configuração em três níveis** (básica, avançada e personalizada), mostrando só o que importa para a modalidade.
+- **Pré-visualização** com gabarito e **modo de teste** para responder como aluno.
+- Criar, **duplicar**, **editar uma cópia**, **favoritar** e **buscar** por texto, tag, disciplina ou dificuldade.
+- **Exportar/importar** `.valendo.json` (uma ou várias atividades) e **CSV** (abre no Excel/Planilhas: colunas `tipo;enunciado;a;b;c;d;e;f;resposta;pontos;tempo;explicacao;tags`).
+- Versões: cada atividade guarda o `schema`; `js/core/activity.js` migra atividades antigas automaticamente, então versões novas do app não quebram arquivos antigos.
 
 Precisão: os toques usam `pointerdown`/`pointerup` com `event.timeStamp`, multitoque por `pointerId`, e a largada é marcada no frame do `requestAnimationFrame` em que o sinal aparece, com o som tocando no mesmo instante (WebAudio).
 
@@ -81,14 +93,16 @@ js/app.js             boot + router + tema
 js/i18n/              textos da interface (pt-BR)
 js/ui/components/     botão, cartão-pasta, modal, toast, post-it, switch, stepper, mascote
 js/ui/screens/        início, sobre, vitrine, 404
-js/core/              lógica pura, sem DOM e sem rede: buzzer, placar, sorteio, cronômetro e equipes
+js/core/              lógica pura, sem DOM e sem rede: buzzer, placar, sorteio, cronômetro, equipes,
+                      atividades (schema + migração), arquivos (colar/CSV/JSON)
+js/core/questions/    um arquivo por tipo de questão (plugin)
 js/audio/             sons gerados com WebAudio
 js/storage/           IndexedDB (turmas e sessões) e preferências
 assets/               ícones e fontes locais
 tests/                testes com node --test
 ```
 
-Rotas: `#/` (início), `#/buzzer` (ajustes), `#/buzzer/jogar` (jogo; `?relampago` usa o padrão), `#/placar`, `#/sorteio`, `#/cronometro`, `#/equipes`, `#/turmas`, `#/ferramentas`, `#/sobre` (Sobre e créditos), `#/vitrine` (todos os componentes).
+Rotas: `#/` (início), `#/buzzer` (ajustes), `#/buzzer/jogar` (jogo; `?relampago` usa o padrão), `#/placar`, `#/sorteio`, `#/cronometro`, `#/equipes`, `#/turmas`, `#/ferramentas`, `#/atividades` (biblioteca), `#/atividades/editar?id=…`, `#/atividades/testar?id=…`, `#/sobre` (Sobre e créditos), `#/vitrine` (todos os componentes).
 
 ## Design system: "caderno neo-brutalista"
 

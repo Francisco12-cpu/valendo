@@ -19,6 +19,9 @@ const ROTAS = {
   '/equipes': () => import('./ui/screens/equipes.js'),
   '/turmas': () => import('./ui/screens/turmas.js'),
   '/ferramentas': () => import('./ui/screens/ferramentas.js'),
+  '/atividades': () => import('./ui/screens/atividades.js'),
+  '/atividades/editar': () => import('./ui/screens/editor.js'),
+  '/atividades/testar': () => import('./ui/screens/testar.js'),
 };
 const naoEncontrado = () => import('./ui/screens/nao-encontrado.js');
 
@@ -53,7 +56,8 @@ async function navegar() {
   document.title = tela === inicio ? `${t('app.nome')} — ${t('inicio.titulo', { destaque: t('inicio.tituloDestaque') })}` : `${nome} · ${t('app.nome')}`;
 
   document.querySelectorAll('[data-rota]').forEach((link) => {
-    if (link.dataset.rota === caminho) link.setAttribute('aria-current', 'page');
+    const rota = link.dataset.rota;
+    if (rota === caminho || (rota !== '/' && caminho.startsWith(`${rota}/`))) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
   });
 

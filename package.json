@@ -1,6 +1,6 @@
 {
   "name": "valendo",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "description": "Caixa de ferramentas gratuita para a sala de aula. Sem build: os arquivos são servidos direto.",
   "author": "Francisco Audir (@filho.af)",

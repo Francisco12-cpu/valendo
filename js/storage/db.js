@@ -7,6 +7,9 @@ const VERSAO = 1;
 export const LOJAS = ['turmas', 'sessoes', 'atividades', 'resultados'];
 
 let conexao = null;
+// Fila de escritas: leituras esperam as escritas pendentes (sem dados velhos ao trocar de tela).
+let escritas = Promise.resolve();
+const enfileirar = (fn) => (escritas = escritas.then(fn, fn));
 const memoria = new Map(LOJAS.map((l) => [l, new Map()]));
 
 function abrir() {
@@ -47,6 +50,7 @@ function operar(loja, modo, fn) {
 }
 
 export async function ler(loja, id) {
+  await escritas;
   try {
     return (await operar(loja, 'readonly', (s) => (s ? s.get(id) : { result: memoria.get(loja).get(id) }))) ?? null;
   } catch {
@@ -55,6 +59,7 @@ export async function ler(loja, id) {
 }
 
 export async function listar(loja) {
+  await escritas;
   try {
     return (await operar(loja, 'readonly', (s) => (s ? s.getAll() : { result: [...memoria.get(loja).values()] }))) ?? [];
   } catch {
@@ -66,21 +71,15 @@ export async function salvar(loja, registro) {
   const agora = new Date().toISOString();
   const dados = { criadoEm: agora, ...registro, atualizadoEm: agora };
   memoria.get(loja).set(dados.id, dados);
-  try {
-    await operar(loja, 'readwrite', (s) => s?.put(dados));
-  } catch {
+  await enfileirar(() => operar(loja, 'readwrite', (s) => s?.put(dados)).catch(() => {
     /* fica só na memória desta aba */
-  }
+  }));
   return dados;
 }
 
 export async function apagar(loja, id) {
   memoria.get(loja).delete(id);
-  try {
-    await operar(loja, 'readwrite', (s) => s?.delete(id));
-  } catch {
-    /* ignorado */
-  }
+  await enfileirar(() => operar(loja, 'readwrite', (s) => s?.delete(id)).catch(() => {}));
 }
 
 export function novoId(prefixo = 'id') {

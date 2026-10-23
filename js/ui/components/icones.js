@@ -29,6 +29,11 @@ export const icones = {
   projetor: base('<rect x="5" y="8" width="38" height="24" rx="3"/><path d="M24 32v8M15 42h18"/>'),
   equipes: base('<circle cx="16" cy="16" r="6"/><circle cx="33" cy="16" r="6"/><path d="M5 38c0-7 5-12 11-12s11 5 11 12M22 38c0-7 5-12 11-12s10 5 10 12"/>'),
   turmas: base('<rect x="8" y="5" width="30" height="38" rx="3"/><path d="M8 5v38M15 14h16M15 21h16M15 28h10"/>'),
+  estrela: base('<path d="M24 5l5.9 12 13.1 1.9-9.5 9.3 2.2 13.1L24 35l-11.7 6.3 2.2-13.1L5 18.9 18.1 17z"/>'),
+  cima: base('<path d="M12 28l12-12 12 12"/>'),
+  baixo: base('<path d="M12 20l12 12 12-12"/>'),
+  copiar: base('<rect x="15" y="15" width="25" height="27" rx="3"/><path d="M33 15V9a3 3 0 0 0-3-3H11a3 3 0 0 0-3 3v21a3 3 0 0 0 3 3h4"/>'),
+  lixo: base('<path d="M8 12h32M19 12V7h10v5M12 12l2 29h20l2-29M20 19v15M28 19v15"/>'),
   raio: base('<path d="M27 4L10 27h12l-3 17 19-25H26z" fill="currentColor"/>'),
   seta: base('<path d="M4 8c20-2 42 6 52 30"/><path d="M43 34l13 5 4-13"/>', '0 0 64 48'),
 };

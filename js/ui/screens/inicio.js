@@ -105,6 +105,13 @@ export function render(alvo) {
     ),
     h(
       'section',
+      { class: 'secao atalho cartao', 'aria-labelledby': 'inicio-banco' },
+      h('div', { class: 'atalho__icone', 'aria-hidden': 'true' }, svg(icones.provas)),
+      h('div', { class: 'pilha pilha--justa' }, h('h2', { id: 'inicio-banco', class: 'secao__titulo' }, t('inicio.banco')), h('p', { class: 'texto-suave' }, t('inicio.bancoDesc'))),
+      botaoLink('#/atividades', 'botao--info', 'mais', t('inicio.bancoAbrir'))
+    ),
+    h(
+      'section',
       { class: 'secao', 'aria-labelledby': 'inicio-como' },
       h('h2', { id: 'inicio-como', class: 'secao__titulo' }, t('inicio.comoFunciona')),
       h('ol', { class: 'passos', role: 'list' }, passos)
