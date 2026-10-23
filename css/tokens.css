@@ -66,7 +66,7 @@
   --cor-sorteio: var(--ciano);
   --cor-quiz: var(--laranja);
   --cor-passa: var(--rosa);
-  --cor-espiral: var(--roxo);
+  --cor-espiral: #A08CFF;         /* roxo mais claro: texto escuro com 6,7:1 */
   --cor-provas: var(--azul);
   --cor-ferramentas: var(--lima);
 
