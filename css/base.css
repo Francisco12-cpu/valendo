@@ -1,0 +1,327 @@
+/* =========================================================
+   Valendo! — base: reset, tipografia, layout e acessibilidade
+   Mobile-first. Breakpoints: 600px (tablet) e 1024px (desktop/projetor)
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--fonte-corpo);
+  font-size: var(--fs-base);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img,
+svg,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.1;
+  overflow-wrap: break-word;
+}
+
+h1,
+.manuscrito {
+  font-family: var(--fonte-titulo);
+  font-weight: 700;
+}
+
+h1 {
+  font-size: var(--fs-titulo);
+}
+
+h2 {
+  font-size: var(--fs-g);
+  font-weight: 700;
+}
+
+h3 {
+  font-size: var(--fs-m);
+  font-weight: 700;
+}
+
+p {
+  max-width: 65ch;
+}
+
+a {
+  color: var(--acao-texto);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  text-decoration-thickness: 3px;
+}
+
+/* ---------- Foco visível (contorno laranja) ---------- */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+main:focus,
+h1:focus {
+  outline: none;
+}
+
+/* ---------- Utilitários ---------- */
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Marca-texto atrás de uma palavra */
+.marca-texto {
+  background: linear-gradient(
+    100deg,
+    transparent 0.2em,
+    var(--marca-texto) 0.3em,
+    var(--marca-texto) calc(100% - 0.3em),
+    transparent calc(100% - 0.2em)
+  );
+  background-size: 100% 0.55em;
+  background-repeat: no-repeat;
+  background-position: 0 85%;
+  padding: 0 0.12em;
+  margin: 0 -0.12em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* Fundo pautado de caderno (usar como enfeite) */
+.pautado {
+  background-color: var(--superficie);
+  background-image:
+    linear-gradient(90deg, transparent 2.6rem, var(--margem-caderno) 2.6rem, var(--margem-caderno) calc(2.6rem + 2px), transparent calc(2.6rem + 2px)),
+    repeating-linear-gradient(transparent 0, transparent calc(1.75rem - 1px), var(--linha-caderno) calc(1.75rem - 1px), var(--linha-caderno) 1.75rem);
+}
+
+.texto-suave {
+  color: var(--tinta-suave);
+}
+
+/* ---------- Pular para o conteúdo ---------- */
+.pular {
+  position: absolute;
+  left: var(--esp-4);
+  top: -100px;
+  z-index: 100;
+  padding: var(--esp-3) var(--esp-4);
+  background: var(--superficie);
+  color: var(--tinta);
+  border: var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  font-weight: 700;
+}
+
+.pular:focus-visible {
+  top: var(--esp-4);
+}
+
+/* ---------- Layout do app ---------- */
+.cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-3);
+  width: 100%;
+  max-width: var(--largura-max);
+  margin: 0 auto;
+  padding: var(--esp-3) var(--esp-4);
+  padding-left: max(var(--esp-4), env(safe-area-inset-left));
+  padding-right: max(var(--esp-4), env(safe-area-inset-right));
+  padding-top: max(var(--esp-3), env(safe-area-inset-top));
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alvo);
+  font-family: var(--fonte-titulo);
+  font-weight: 700;
+  font-size: 2.25rem;
+  line-height: 1;
+  color: var(--tinta);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.logo__exclamacao {
+  color: var(--acao-texto);
+}
+
+.cabecalho__acoes {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-2);
+}
+
+.conteudo {
+  flex: 1;
+  /* o rodapé nasce abaixo da dobra: a tela renderizada por JS não o empurra (CLS) */
+  min-height: calc(100vh - 4rem);
+  min-height: calc(100dvh - 4rem);
+  width: 100%;
+  max-width: var(--largura-max);
+  margin: 0 auto;
+  padding: var(--esp-4);
+  padding-left: max(var(--esp-4), env(safe-area-inset-left));
+  padding-right: max(var(--esp-4), env(safe-area-inset-right));
+}
+
+.rodape {
+  width: 100%;
+  max-width: var(--largura-max);
+  margin: 0 auto;
+  padding: var(--esp-5) var(--esp-4);
+  padding-bottom: max(var(--esp-5), env(safe-area-inset-bottom));
+  border-top: 2px dashed var(--linha-caderno);
+  text-align: center;
+  font-size: var(--fs-p);
+  color: var(--tinta-suave);
+}
+
+.rodape a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alvo);
+  font-weight: 700;
+}
+
+/* Cabeçalho de seção de tela */
+.tela__topo {
+  display: grid;
+  gap: var(--esp-2);
+  margin-bottom: var(--esp-5);
+}
+
+.tela__subtitulo {
+  font-size: var(--fs-m);
+  color: var(--tinta-suave);
+}
+
+.secao {
+  margin-top: var(--esp-6);
+}
+
+.secao > h2 {
+  margin-bottom: var(--esp-4);
+}
+
+.pilha {
+  display: grid;
+  gap: var(--esp-4);
+}
+
+.linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--esp-3);
+}
+
+/* ---------- Breakpoints ---------- */
+@media (min-width: 600px) {
+  .cabecalho,
+  .conteudo {
+    padding-left: max(var(--esp-5), env(safe-area-inset-left));
+    padding-right: max(var(--esp-5), env(safe-area-inset-right));
+  }
+
+  .conteudo {
+    padding-top: var(--esp-5);
+    padding-bottom: var(--esp-6);
+  }
+
+  .logo {
+    font-size: 2.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .conteudo {
+    padding-top: var(--esp-6);
+  }
+}
+
+/* Celular deitado: telas baixas, economiza altura */
+@media (orientation: landscape) and (max-height: 500px) {
+  .cabecalho {
+    padding-top: var(--esp-1);
+    padding-bottom: var(--esp-1);
+  }
+
+  .logo {
+    font-size: 1.9rem;
+  }
+
+  .conteudo {
+    padding-top: var(--esp-2);
+  }
+}
+
+/* ---------- Movimento reduzido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

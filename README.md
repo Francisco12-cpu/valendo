@@ -1,0 +1,85 @@
+# Valendo!
+
+Caixa de ferramentas **gratuita e de código aberto** para a sala de aula: buzzer, placar, sorteio, quiz, prova em espiral e muito mais. Funciona no celular, no tablet e no computador, **sem internet, sem conta e sem coletar dados**.
+
+> Status: **Fase 0 — Fundação** concluída (design system, navegação, offline). As modalidades aparecem na tela inicial como "Em breve" e chegam nas próximas fases. Veja o plano completo em [`PLANO-VALENDO.md`](PLANO-VALENDO.md).
+
+## Como rodar localmente
+
+Não há instalação nem etapa de build: são arquivos estáticos (HTML, CSS e JavaScript puro com ES Modules). Só é preciso servir a pasta por HTTP — abrir o `index.html` direto (`file://`) não funciona, porque módulos e service worker exigem um servidor.
+
+**No Windows:** dê dois cliques em `iniciar.bat`. Ele sobe o servidor e abre o navegador.
+
+Ou, em qualquer sistema, escolha um:
+
+```bash
+# Python (já vem no Windows com Python, no macOS e no Linux)
+python -m http.server 8080
+
+# ou Node
+npx serve -l 8080 .
+```
+
+Depois abra <http://localhost:8080>.
+
+### Testes
+
+```bash
+node --test        # ou: npm test
+```
+
+Os testes conferem, entre outras coisas, que todo arquivo do app está no cache offline, que `/js/core` não usa DOM nem rede, que as chaves de tradução existem e que os créditos estão no lugar.
+
+## Funciona offline
+
+Na primeira visita o service worker (`sw.js`) guarda o app inteiro no aparelho. A partir daí ele abre mesmo sem internet. Pode também ser **instalado** como app (PWA) pelo menu do navegador.
+
+Ao publicar uma versão nova, troque `VERSAO` em `sw.js` **e** em `js/config.js`, e mantenha a lista `ARQUIVOS` do `sw.js` atualizada (o teste avisa se faltar algo).
+
+## Publicar no GitHub Pages
+
+1. Envie a pasta para um repositório no GitHub.
+2. Em **Settings → Pages**, escolha *Deploy from a branch*, branch `main`, pasta `/ (root)`.
+3. O app fica em `https://SEU-USUARIO.github.io/NOME-DO-REPO/`.
+4. A URL do repositório fica em `REPOSITORIO`, no arquivo `js/config.js` (aparece na tela Sobre).
+
+## Estrutura
+
+```
+index.html            shell do app (SPA com router por hash)
+404.html              "folha arrancada do caderno" (independente, sem dependências)
+manifest.webmanifest  dados do PWA
+sw.js                 service worker (cache offline)
+css/                  tokens.css · base.css · components.css
+js/app.js             boot + router + tema
+js/i18n/              textos da interface (pt-BR)
+js/ui/components/     botão, cartão-pasta, modal, toast, post-it, switch, stepper, mascote
+js/ui/screens/        início, sobre, vitrine, 404
+js/core/              lógica pura, sem DOM e sem rede (a partir da Fase 1)
+assets/               ícones e fontes locais
+tests/                testes com node --test
+```
+
+Rotas: `#/` (início), `#/sobre` (Sobre e créditos), `#/vitrine` (todos os componentes).
+
+## Design system: "caderno neo-brutalista"
+
+Fundo branco-papel, bordas pretas grossas, sombra sólida deslocada e cores vivas. Cada modalidade é uma pasta com aba colorida. Títulos manuscritos (Caveat), corpo em Space Grotesk, laranja escuro para ações e azul escuro para informação. Botões "afundam" ao apertar. Modo escuro "quadro-negro" automático ou manual (botão no cabeçalho).
+
+Acessibilidade: contraste AA, alvos de toque de 48px, foco visível em laranja, respeito a `prefers-reduced-motion` e tamanhos em `rem` (acompanham o tamanho de texto do sistema).
+
+## Privacidade
+
+Sem contas, sem analytics, sem coleta. Tudo fica no aparelho.
+
+## Créditos e autor
+
+Criado por **Francisco Audir** — Instagram [@filho.af](https://instagram.com/filho.af).
+
+Repositório: <https://github.com/Francisco12-cpu/valendo>
+
+Fontes [Caveat](https://fonts.google.com/specimen/Caveat) e [Space Grotesk](https://fonts.google.com/specimen/Space+Grotesk), sob a SIL Open Font License (cópias das licenças em `assets/fonts/`).
+
+## Licença
+
+[MIT](LICENSE) — use, copie e adapte à vontade.

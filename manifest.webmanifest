@@ -1,0 +1,21 @@
+{
+  "name": "Valendo!",
+  "short_name": "Valendo!",
+  "description": "Caixa de ferramentas gratuita para a sala de aula: buzzer, placar, sorteio, quiz e muito mais. Funciona sem internet.",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#FFFDF7",
+  "theme_color": "#FFFDF7",
+  "categories": ["education", "productivity"],
+  "icons": [
+    { "src": "assets/icons/icone.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "assets/icons/icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icone-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

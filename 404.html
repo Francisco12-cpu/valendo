@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Folha arrancada · Valendo!</title>
+  <meta name="description" content="Página não encontrada no Valendo!.">
+  <meta name="theme-color" content="#FFFDF7">
+  <meta name="color-scheme" content="light dark">
+  <!-- Página independente: o GitHub Pages a serve em qualquer caminho,
+       então tudo (CSS e desenho) fica embutido aqui, sem caminhos relativos. -->
+  <style>
+    :root {
+      --papel: #FFFDF7; --tinta: #141414; --linha-caderno: #DCE6F5; --superficie: #FFFFFF;
+      --margem: #F2A3B3; --acao: #B0401A; --sobre-acao: #FFFFFF; --amarelo: #FFD23F;
+      --sombra: #141414; --foco: #D9531E; --suave: #4A4743;
+      --titulo: "Caveat", "Patrick Hand", "Segoe Print", "Comic Sans MS", cursive;
+      --corpo: "Space Grotesk", "Inter", system-ui, sans-serif;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --papel: #1F2A24; --tinta: #F3F1E8; --linha-caderno: rgba(243,241,232,.1); --superficie: #26332C;
+        --margem: rgba(255,92,138,.45); --acao: #FF8A5B; --sobre-acao: #141414; --sombra: #0A0F0C;
+        --foco: #FF8A5B; --suave: #CFCCC0;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; }
+    body {
+      min-height: 100vh; display: grid; place-items: center; padding: 1rem;
+      background: var(--papel); color: var(--tinta); font-family: var(--corpo); line-height: 1.5;
+    }
+    .folha {
+      width: min(34rem, 100%);
+      filter: drop-shadow(2px 0 0 var(--tinta)) drop-shadow(-2px 0 0 var(--tinta))
+              drop-shadow(0 2px 0 var(--tinta)) drop-shadow(0 -2px 0 var(--tinta))
+              drop-shadow(4px 4px 0 var(--sombra));
+      transform: rotate(-1.5deg);
+    }
+    .papel {
+      position: relative; display: grid; justify-items: center; gap: 1rem;
+      padding: 3rem 1.5rem 2rem 3.6rem; text-align: center;
+      background-color: var(--superficie);
+      background-image:
+        linear-gradient(90deg, transparent 2.6rem, var(--margem) 2.6rem, var(--margem) calc(2.6rem + 2px), transparent calc(2.6rem + 2px)),
+        repeating-linear-gradient(transparent 0, transparent calc(1.75rem - 1px), var(--linha-caderno) calc(1.75rem - 1px), var(--linha-caderno) 1.75rem);
+      clip-path: polygon(0% 14px, 4% 4px, 8% 16px, 12% 2px, 17% 12px, 21% 0, 26% 15px, 30% 5px, 35% 13px, 39% 1px, 44% 16px, 48% 6px, 53% 12px, 57% 0, 62% 14px, 66% 4px, 71% 16px, 75% 3px, 80% 11px, 84% 0, 89% 15px, 93% 5px, 97% 13px, 100% 6px, 100% 100%, 0% 100%);
+    }
+    .papel::before {
+      content: ""; position: absolute; top: 2rem; bottom: 1rem; left: .7rem; width: 1rem;
+      background: radial-gradient(circle at 50% 50%, var(--papel) .4rem, transparent calc(.4rem + 1px)) 0 0 / 1rem 2.4rem repeat-y;
+    }
+    .codigo { font-family: var(--titulo); font-size: clamp(3rem, 2.2rem + 4vw, 5.5rem); font-weight: 700; line-height: .9; color: var(--acao); }
+    h1 { font-family: var(--titulo); font-size: clamp(2rem, 1.6rem + 2vw, 3rem); line-height: 1.1; }
+    p { font-size: 1.125rem; }
+    svg { width: 6.5rem; height: auto; }
+    .botao {
+      display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: .5rem 1.5rem;
+      background: var(--acao); color: var(--sobre-acao); border: 2.5px solid var(--tinta); border-radius: 14px;
+      box-shadow: 4px 4px 0 var(--sombra); font-weight: 700; text-decoration: none;
+    }
+    .botao:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--sombra); }
+    .botao:focus-visible { outline: 3px solid var(--foco); outline-offset: 3px; }
+    .creditos { margin-top: 2rem; font-size: .875rem; color: var(--suave); text-align: center; }
+    .creditos a { color: var(--tinta); font-weight: 700; }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="folha">
+      <div class="papel">
+        <p class="codigo" aria-hidden="true">404</p>
+        <svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="22" cy="58" r="12" style="fill:var(--superficie)"/>
+          <circle cx="98" cy="58" r="12" style="fill:var(--superficie)"/>
+          <circle cx="60" cy="60" r="40" style="fill:var(--superficie)"/>
+          <path d="M36 66c0-14 10-22 24-22s24 8 24 22-10 26-24 26-24-12-24-26z" style="fill:var(--amarelo)" stroke-width="3"/>
+          <g style="stroke:#141414">
+            <circle cx="48" cy="60" r="3.5" style="fill:#141414" stroke="none"/>
+            <circle cx="72" cy="60" r="3.5" style="fill:#141414" stroke="none"/>
+            <path d="M56 70h8"/>
+            <path d="M48 84q12 -10 24 0"/>
+          </g>
+          <path d="M50 22q6-8 10 0q4-8 10 0"/>
+        </svg>
+        <h1>Opa! Essa folha foi arrancada.</h1>
+        <p>A página que você procurou não está no caderno.</p>
+        <a class="botao" id="voltar" href="/">Voltar para o início</a>
+      </div>
+    </div>
+    <p class="creditos">Feito por Francisco Audir · <a href="https://instagram.com/filho.af" target="_blank" rel="noopener">@filho.af</a></p>
+  </main>
+  <script>
+    // Descobre a raiz do app: pelo service worker (se já instalado) ou,
+    // no GitHub Pages de projeto, pelo primeiro trecho do caminho (/nome-do-repo/).
+    (function () {
+      var link = document.getElementById('voltar');
+      var raiz = '/';
+      var partes = location.pathname.split('/');
+      if (/\.github\.io$/.test(location.hostname) && partes[1]) raiz = '/' + partes[1] + '/';
+      link.href = raiz;
+      if ('serviceWorker' in navigator && navigator.serviceWorker.getRegistration) {
+        navigator.serviceWorker.getRegistration().then(function (reg) {
+          if (reg && reg.scope) link.href = reg.scope;
+        }).catch(function () {});
+      }
+    })();
+  </script>
+</body>
+</html>

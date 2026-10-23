@@ -1,0 +1,92 @@
+// Service worker do Valendo!: guarda o app inteiro no aparelho para funcionar offline.
+// Ao publicar uma versão nova, troque VERSAO (e em js/config.js) e mantenha ARQUIVOS em dia
+// — o teste tests/fase0.test.js confere se todos existem.
+const VERSAO = '0.1.0';
+const CACHE = `valendo-${VERSAO}`;
+
+const ARQUIVOS = [
+  './',
+  './index.html',
+  './404.html',
+  './manifest.webmanifest',
+  './css/tokens.css',
+  './css/base.css',
+  './css/components.css',
+  './js/app.js',
+  './js/config.js',
+  './js/i18n/i18n.js',
+  './js/i18n/pt-BR.js',
+  './js/ui/dom.js',
+  './js/ui/components/botao.js',
+  './js/ui/components/icones.js',
+  './js/ui/components/mascote.js',
+  './js/ui/components/modal.js',
+  './js/ui/components/pasta.js',
+  './js/ui/components/postit.js',
+  './js/ui/components/stepper.js',
+  './js/ui/components/switch.js',
+  './js/ui/components/toast.js',
+  './js/ui/screens/inicio.js',
+  './js/ui/screens/nao-encontrado.js',
+  './js/ui/screens/sobre.js',
+  './js/ui/screens/vitrine.js',
+  './assets/fonts/caveat-latin-wght.woff2',
+  './assets/fonts/space-grotesk-latin-wght.woff2',
+  './assets/icons/icone.svg',
+  './assets/icons/icone-192.png',
+  './assets/icons/icone-512.png',
+  './assets/icons/icone-maskable-512.png',
+  './assets/icons/apple-touch-icon.png',
+];
+
+self.addEventListener('install', (evento) => {
+  evento.waitUntil(
+    caches
+      .open(CACHE)
+      .then((cache) => cache.addAll(ARQUIVOS.map((url) => new Request(url, { cache: 'reload' }))))
+      .then(() => self.skipWaiting())
+  );
+});
+
+self.addEventListener('activate', (evento) => {
+  evento.waitUntil(
+    caches
+      .keys()
+      .then((nomes) => Promise.all(nomes.filter((n) => n.startsWith('valendo-') && n !== CACHE).map((n) => caches.delete(n))))
+      .then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener('fetch', (evento) => {
+  const { request } = evento;
+  if (request.method !== 'GET') return;
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return;
+
+  // Navegação: o shell vem do cache na hora (mesmo com Wi-Fi da escola "sem internet").
+  if (request.mode === 'navigate') {
+    const escopo = new URL(self.registration.scope);
+    const ehShell = url.pathname === escopo.pathname || url.pathname === `${escopo.pathname}index.html`;
+    evento.respondWith(
+      ehShell
+        ? caches.match('./index.html').then((r) => r || fetch(request))
+        : fetch(request).catch(() => caches.match('./404.html'))
+    );
+    return;
+  }
+
+  // Demais arquivos: cache primeiro; o que vier da rede é guardado para a próxima vez.
+  evento.respondWith(
+    caches.match(request, { ignoreSearch: true }).then(
+      (salvo) =>
+        salvo ||
+        fetch(request).then((resposta) => {
+          if (resposta.ok && resposta.type === 'basic') {
+            const copia = resposta.clone();
+            caches.open(CACHE).then((cache) => cache.put(request, copia));
+          }
+          return resposta;
+        })
+    )
+  );
+});

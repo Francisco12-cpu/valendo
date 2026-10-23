@@ -1,0 +1,148 @@
+/* =========================================================
+   Valendo! — tokens do design system "caderno neo-brutalista"
+   Fonte da verdade: PLANO-VALENDO.md §5
+   ========================================================= */
+
+@font-face {
+  font-family: "Caveat";
+  src: url("../assets/fonts/caveat-latin-wght.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("../assets/fonts/space-grotesk-latin-wght.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* --- Tokens do plano (§5) --- */
+  --papel: #FFFDF7;
+  --tinta: #141414;
+  --linha-caderno: #DCE6F5;
+  --laranja: #D9531E;
+  --azul: #1E3A8A;
+  --amarelo: #FFD23F;
+  --verde: #3DBE5A;
+  --rosa: #FF5C8A;
+  --roxo: #7B61FF;
+  --ciano: #3FC1E0;
+  --lima: #B5E03F;
+  --borda: 2.5px solid var(--tinta);
+  --cor-sombra: var(--tinta);
+  --sombra: 4px 4px 0 var(--cor-sombra);
+  --sombra-press: 1px 1px 0 var(--cor-sombra);
+  --raio: 14px;
+  --fonte-titulo: "Caveat", "Patrick Hand", cursive;
+  --fonte-corpo: "Space Grotesk", "Inter", system-ui, sans-serif;
+
+  /* --- Derivados (garantem contraste AA) --- */
+  --superficie: #FFFFFF;          /* fundo de cartões */
+  --tinta-suave: #4A4743;         /* texto secundário: 8.9:1 no papel */
+  --tinta-fixa: #141414;          /* texto sobre cores vivas, igual nos dois temas */
+  --margem-caderno: #F2A3B3;      /* linha vermelha da margem */
+  --acao: #B0401A;                /* laranja escuro p/ fundo de botão com texto claro: 5.6:1 */
+  --sobre-acao: #FFFFFF;
+  --acao-texto: #B0401A;          /* links e texto de ação sobre o papel */
+  --info: var(--azul);            /* azul escuro: informação e estado */
+  --sobre-info: #FFFFFF;
+  --info-texto: var(--azul);
+  --perigo: #B3261E;
+  --sobre-perigo: #FFFFFF;
+  --sucesso: #1F7A35;
+  --marca-texto: rgba(255, 210, 63, 0.8);
+  --foco: var(--laranja);         /* contorno de foco: 3.9:1 no papel (UI ≥ 3:1) */
+  --veu: rgba(20, 20, 20, 0.55);  /* fundo atrás do modal */
+
+  /* Cores por modalidade (§5) */
+  --cor-buzzer: var(--amarelo);
+  --cor-placar: var(--verde);
+  --cor-sorteio: var(--ciano);
+  --cor-quiz: var(--laranja);
+  --cor-passa: var(--rosa);
+  --cor-espiral: var(--roxo);
+  --cor-provas: var(--azul);
+  --cor-ferramentas: var(--lima);
+
+  /* Espaçamentos (escala de 4px) */
+  --esp-1: 0.25rem;
+  --esp-2: 0.5rem;
+  --esp-3: 0.75rem;
+  --esp-4: 1rem;
+  --esp-5: 1.5rem;
+  --esp-6: 2rem;
+  --esp-7: 3rem;
+  --esp-8: 4rem;
+
+  /* Tipografia (fluida, em rem para respeitar o tamanho de texto do usuário) */
+  --fs-p: 0.875rem;
+  --fs-base: 1rem;
+  --fs-m: 1.125rem;
+  --fs-g: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --fs-titulo: clamp(2.25rem, 1.8rem + 2vw, 3.5rem);
+  --fs-mega: clamp(3rem, 2.2rem + 4vw, 5.5rem);
+
+  /* Medidas */
+  --alvo: 48px;                   /* alvo de toque mínimo */
+  --largura-max: 72rem;
+  --deslize: 3px;                 /* quanto o botão "afunda" */
+  --transicao: 110ms ease-out;
+
+  color-scheme: light;
+}
+
+/* ---------- Modo escuro "quadro-negro" ----------
+   Segue o sistema (automático) ou a escolha manual via data-theme. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="claro"]) {
+    --papel: #1F2A24;
+    --tinta: #F3F1E8;
+    --linha-caderno: rgba(243, 241, 232, 0.10);
+    --superficie: #26332C;
+    --tinta-suave: #CFCCC0;
+    --margem-caderno: rgba(255, 92, 138, 0.45);
+    --cor-sombra: #0A0F0C;
+    --acao: #FF8A5B;
+    --sobre-acao: #141414;
+    --acao-texto: #FF9D73;
+    --info: #9DB8FF;
+    --sobre-info: #141414;
+    --info-texto: #A9C1FF;
+    --cor-provas: #9DB8FF;
+    --perigo: #FF8A80;
+    --sobre-perigo: #141414;
+    --sucesso: #7EE29A;
+    --marca-texto: rgba(255, 210, 63, 0.35);
+    --foco: #FF8A5B;
+    --veu: rgba(0, 0, 0, 0.65);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="quadro"] {
+  --papel: #1F2A24;
+  --tinta: #F3F1E8;
+  --linha-caderno: rgba(243, 241, 232, 0.10);
+  --superficie: #26332C;
+  --tinta-suave: #CFCCC0;
+  --margem-caderno: rgba(255, 92, 138, 0.45);
+  --cor-sombra: #0A0F0C;
+  --acao: #FF8A5B;
+  --sobre-acao: #141414;
+  --acao-texto: #FF9D73;
+  --info: #9DB8FF;
+  --sobre-info: #141414;
+  --info-texto: #A9C1FF;
+  --cor-provas: #9DB8FF;
+  --perigo: #FF8A80;
+  --sobre-perigo: #141414;
+  --sucesso: #7EE29A;
+  --marca-texto: rgba(255, 210, 63, 0.35);
+  --foco: #FF8A5B;
+  --veu: rgba(0, 0, 0, 0.65);
+  color-scheme: dark;
+}

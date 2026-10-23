@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Valendo! — O que vai ser hoje?</title>
+  <meta name="description" content="Caixa de ferramentas gratuita para a sala de aula: buzzer, placar, sorteio, quiz e muito mais. Funciona sem internet.">
+  <meta name="author" content="Francisco Audir (@filho.af)">
+  <meta name="theme-color" content="#FFFDF7">
+  <meta name="color-scheme" content="light dark">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icons/icone.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/icons/icone-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="preload" href="assets/fonts/space-grotesk-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/caveat-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <script>
+    // Aplica o tema salvo antes de pintar a tela (evita piscar).
+    try {
+      var tema = localStorage.getItem('valendo.tema');
+      if (tema === 'claro' || tema === 'quadro') document.documentElement.setAttribute('data-theme', tema);
+    } catch (e) {}
+  </script>
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="cabecalho">
+    <a class="logo" href="#/" data-rota="/" aria-label="Valendo! — início">Valendo<span class="logo__exclamacao">!</span></a>
+    <nav class="cabecalho__acoes" aria-label="Principal">
+      <a class="botao botao--fantasma" href="#/sobre" data-rota="/sobre">Sobre</a>
+    </nav>
+  </header>
+
+  <main id="conteudo" class="conteudo" tabindex="-1">
+    <noscript>
+      <p>O Valendo! precisa de JavaScript ativado para funcionar.</p>
+    </noscript>
+  </main>
+
+  <footer class="rodape">
+    Feito por Francisco Audir · <a href="https://instagram.com/filho.af" target="_blank" rel="noopener">@filho.af</a>
+  </footer>
+
+  <div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+</body>
+</html>
