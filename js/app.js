@@ -22,6 +22,9 @@ const ROTAS = {
   '/atividades': () => import('./ui/screens/atividades.js'),
   '/atividades/editar': () => import('./ui/screens/editor.js'),
   '/atividades/testar': () => import('./ui/screens/testar.js'),
+  '/jogar': () => import('./ui/screens/jogar.js'),
+  '/quiz': () => import('./ui/screens/jogos.js'),
+  '/passa': () => import('./ui/screens/jogos.js'),
 };
 const naoEncontrado = () => import('./ui/screens/nao-encontrado.js');
 

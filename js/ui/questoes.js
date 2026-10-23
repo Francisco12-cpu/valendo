@@ -140,7 +140,7 @@ const EDITORES = {
 };
 
 // nivel: 'basica' | 'avancada' | 'personalizada' (mostra só o que importa).
-export function EditorQuestao(q, { mudar, nivel = 'basica' }) {
+export function EditorQuestao(q, { mudar, nivel = 'basica', comMultiplicador = false }) {
   const partes = [
     campoTexto({
       rotulo: q.tipo === 'slide' ? t('editor.tituloSlide') : t('editor.enunciado'),
@@ -152,6 +152,24 @@ export function EditorQuestao(q, { mudar, nivel = 'basica' }) {
     }),
     EDITORES[q.tipo](q, mudar),
   ];
+  if (nivel !== 'basica' && comMultiplicador && q.tipo !== 'slide' && q.tipo !== 'enquete') {
+    partes.push(
+      Escolha({
+        rotulo: t('editor.valorPergunta'),
+        valor: String(q.multiplicador ?? 1),
+        compacta: true,
+        aoMudar: (v) => {
+          q.multiplicador = Number(v);
+          mudar();
+        },
+        opcoes: [
+          { valor: '1', texto: t('editor.valorNormal') },
+          { valor: '2', texto: t('editor.valorDobro') },
+          { valor: '0', texto: t('editor.valorZero') },
+        ],
+      })
+    );
+  }
   if (nivel !== 'basica' && q.tipo !== 'slide') {
     partes.push(campoTexto({ rotulo: t('editor.explicacao'), valor: q.explicacao, area: true, linhas: 2, dica: t('editor.explicacaoDica'), aoMudar: (v) => ((q.explicacao = v), mudar()) }));
   }

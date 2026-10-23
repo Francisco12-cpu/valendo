@@ -2,7 +2,7 @@
 
 Caixa de ferramentas **gratuita e de código aberto** para a sala de aula: buzzer, placar, sorteio, quiz, prova em espiral e muito mais. Funciona no celular, no tablet e no computador, **sem internet, sem conta e sem coletar dados**.
 
-> Status: **Fase 3 — Editor de atividades e banco de questões** pronta (e as Fases 0 a 2: fundação, buzzer e ferramentas). Quiz, Passa ou Repassa, Espiral e Provas aparecem como "Em breve" e chegam nas próximas fases. Veja o plano completo em [`PLANO-VALENDO.md`](PLANO-VALENDO.md).
+> Status: **Fase 4 — Quiz no projetor e Passa ou Repassa** pronta (e as Fases 0 a 3: fundação, buzzer, ferramentas e editor de atividades). Próximas: salas conectadas (celular de cada aluno), Prova em Espiral e extras. Quiz, Passa ou Repassa, Espiral e Provas aparecem como "Em breve" e chegam nas próximas fases. Veja o plano completo em [`PLANO-VALENDO.md`](PLANO-VALENDO.md).
 
 ## Buzzer
 
@@ -39,6 +39,17 @@ Em **Atividades** (`#/atividades`) o professor monta quizzes, provas e Passa ou 
 - Criar, **duplicar**, **editar uma cópia**, **favoritar** e **buscar** por texto, tag, disciplina ou dificuldade.
 - **Exportar/importar** `.valendo.json` (uma ou várias atividades) e **CSV** (abre no Excel/Planilhas: colunas `tipo;enunciado;a;b;c;d;e;f;resposta;pontos;tempo;explicacao;tags`).
 - Versões: cada atividade guarda o `schema`; `js/core/activity.js` migra atividades antigas automaticamente, então versões novas do app não quebram arquivos antigos.
+
+## Quiz e Passa ou Repassa
+
+Tudo num aparelho só, ligado no projetor, sem internet:
+
+- **Quiz** (`#/quiz`): abertura, pergunta com tempo, o professor registra a resposta de cada equipe (tocando na forma que a equipe mostrou, ou ✓/✕ nas abertas), revelação com a distribuição das respostas e a explicação, ranking (completo, top 5 ou oculto) e pódio com confete.
+- **Pontuação:** pontos por velocidade (opcional), pergunta valendo em dobro ou zero, bônus por acertos seguidos e desconto por erro.
+- **Passa ou Repassa** (`#/passa`): de 2 a 4 equipes; a equipe da vez responde ou passa, quem recebe responde ou repassa, e quem passou é obrigado a responder. Pontos configuráveis (acerto, acerto no repassa, erro no repassa) e **torta animada** em quem erra.
+- **Exemplo pronto:** "Experimentar o exemplo" cria um quiz de 10 perguntas para testar na hora.
+- O resultado de cada partida fica salvo no aparelho (para os relatórios da Fase 7).
+- **Controle remoto:** o quiz já funciona por comandos (`executar('proxima')`, `'responder'`, `'encerrar'`...); na Fase 5 o celular do professor só vai mandar esses comandos.
 
 Precisão: os toques usam `pointerdown`/`pointerup` com `event.timeStamp`, multitoque por `pointerId`, e a largada é marcada no frame do `requestAnimationFrame` em que o sinal aparece, com o som tocando no mesmo instante (WebAudio).
 
@@ -94,7 +105,7 @@ js/i18n/              textos da interface (pt-BR)
 js/ui/components/     botão, cartão-pasta, modal, toast, post-it, switch, stepper, mascote
 js/ui/screens/        início, sobre, vitrine, 404
 js/core/              lógica pura, sem DOM e sem rede: buzzer, placar, sorteio, cronômetro, equipes,
-                      atividades (schema + migração), arquivos (colar/CSV/JSON)
+                      atividades (schema + migração), arquivos (colar/CSV/JSON), quiz, passa-repassa
 js/core/questions/    um arquivo por tipo de questão (plugin)
 js/audio/             sons gerados com WebAudio
 js/storage/           IndexedDB (turmas e sessões) e preferências
@@ -102,7 +113,7 @@ assets/               ícones e fontes locais
 tests/                testes com node --test
 ```
 
-Rotas: `#/` (início), `#/buzzer` (ajustes), `#/buzzer/jogar` (jogo; `?relampago` usa o padrão), `#/placar`, `#/sorteio`, `#/cronometro`, `#/equipes`, `#/turmas`, `#/ferramentas`, `#/atividades` (biblioteca), `#/atividades/editar?id=…`, `#/atividades/testar?id=…`, `#/sobre` (Sobre e créditos), `#/vitrine` (todos os componentes).
+Rotas: `#/` (início), `#/buzzer` (ajustes), `#/buzzer/jogar` (jogo; `?relampago` usa o padrão), `#/placar`, `#/sorteio`, `#/cronometro`, `#/equipes`, `#/turmas`, `#/ferramentas`, `#/atividades` (biblioteca), `#/atividades/editar?id=…`, `#/atividades/testar?id=…`, `#/quiz`, `#/passa`, `#/jogar?id=…`, `#/sobre` (Sobre e créditos), `#/vitrine` (todos os componentes).
 
 ## Design system: "caderno neo-brutalista"
 

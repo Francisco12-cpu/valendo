@@ -195,7 +195,8 @@ export function render(alvo) {
       h(
         'div',
         { class: 'linha atividade__acoes' },
-        h('a', { class: 'botao botao--primario', href: `#/atividades/editar?id=${a.id}` }, t('atividades.editar')),
+        h('a', { class: 'botao botao--primario', href: `#/jogar?id=${a.id}` }, t('atividades.jogar')),
+        h('a', { class: 'botao', href: `#/atividades/editar?id=${a.id}` }, t('atividades.editar')),
         h('a', { class: 'botao', href: `#/atividades/testar?id=${a.id}` }, t('atividades.testar')),
         mais
       )

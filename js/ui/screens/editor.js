@@ -133,7 +133,7 @@ export function render(alvo, params) {
           'li',
           { class: 'cartao pergunta', 'data-id': q.id, 'aria-label': t('editor.perguntaN', { n: i + 1 }) },
           h('div', { class: 'pergunta__topo' }, h('span', { class: 'pergunta__numero manuscrito' }, `${i + 1}`), h('span', { class: 'etiqueta' }, nomes[q.tipo]), acoes),
-          EditorQuestao(q, { mudar: mudou, nivel: a.nivelConfig }),
+          EditorQuestao(q, { mudar: mudou, nivel: a.nivelConfig, comMultiplicador: ['quiz', 'buzzer', 'personalizada'].includes(a.modalidade) }),
           erro
         );
       })
@@ -310,7 +310,8 @@ export function render(alvo, params) {
       h(
         'div',
         { class: 'linha editor__barra' },
-        h('a', { class: 'botao botao--primario', href: `#/atividades/testar?id=${a.id}` }, svg(icones.quiz), h('span', null, t('editor.testar'))),
+        h('a', { class: 'botao botao--primario', href: `#/jogar?id=${a.id}` }, svg(icones.raio), h('span', null, t('editor.jogar'))),
+        h('a', { class: 'botao', href: `#/atividades/testar?id=${a.id}` }, svg(icones.quiz), h('span', null, t('editor.testar'))),
         h('a', { class: 'botao', href: `#/atividades/testar?id=${a.id}&modo=previa` }, t('editor.previa')),
         Botao({
           texto: t('atividades.editarCopia'),
