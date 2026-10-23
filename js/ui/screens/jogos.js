@@ -43,7 +43,7 @@ export function render(alvo) {
 
   alvo.append(
     h('div', { class: 'tela__topo' }, h('h1', { tabindex: '-1' }, t(`jogos.${c.chave}.titulo`)), h('p', { class: 'tela__subtitulo' }, t(`jogos.${c.chave}.subtitulo`))),
-    h('div', { class: 'linha' }, nova, exemplo, h('a', { class: 'botao botao--fantasma', href: '#/atividades' }, t('jogos.todas'))),
+    h('div', { class: 'linha' }, nova, exemplo, c.chave === 'quiz' ? h('a', { class: 'botao', href: '#/sala' }, t('jogos.comCelulares')) : null, h('a', { class: 'botao botao--fantasma', href: '#/atividades' }, t('jogos.todas'))),
     h('section', { class: 'secao', 'aria-labelledby': 'jogos-lista' }, h('h2', { id: 'jogos-lista', class: 'secao__titulo' }, t('jogos.suas')), lista)
   );
 

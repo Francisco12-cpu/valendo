@@ -2,7 +2,7 @@
 
 Caixa de ferramentas **gratuita e de código aberto** para a sala de aula: buzzer, placar, sorteio, quiz, prova em espiral e muito mais. Funciona no celular, no tablet e no computador, **sem internet, sem conta e sem coletar dados**.
 
-> Status: **Fase 4 — Quiz no projetor e Passa ou Repassa** pronta (e as Fases 0 a 3: fundação, buzzer, ferramentas e editor de atividades). Próximas: salas conectadas (celular de cada aluno), Prova em Espiral e extras. Quiz, Passa ou Repassa, Espiral e Provas aparecem como "Em breve" e chegam nas próximas fases. Veja o plano completo em [`PLANO-VALENDO.md`](PLANO-VALENDO.md).
+> Status: **Fase 5 — Salas conectadas** pronta (e as Fases 0 a 4: fundação, buzzer, ferramentas, editor de atividades, quiz e Passa ou Repassa). Próximas: Prova em Espiral e provas (Fase 6) e extras (Fase 7). Quiz, Passa ou Repassa, Espiral e Provas aparecem como "Em breve" e chegam nas próximas fases. Veja o plano completo em [`PLANO-VALENDO.md`](PLANO-VALENDO.md).
 
 ## Buzzer
 
@@ -50,6 +50,27 @@ Tudo num aparelho só, ligado no projetor, sem internet:
 - **Exemplo pronto:** "Experimentar o exemplo" cria um quiz de 10 perguntas para testar na hora.
 - O resultado de cada partida fica salvo no aparelho (para os relatórios da Fase 7).
 - **Controle remoto:** o quiz já funciona por comandos (`executar('proxima')`, `'responder'`, `'encerrar'`...); na Fase 5 o celular do professor só vai mandar esses comandos.
+
+## Salas com celulares
+
+Em **Sala com celulares** (`#/sala`) cada aluno joga no próprio celular, entrando com um **código de 6 caracteres** (sem 0/O nem 1/I) ou pelo **QR Code**. O aparelho do professor é sempre o **host com autoridade**: valida tempo, pontos e trapaças.
+
+- **Quiz ao vivo**: a pergunta no projetor e as respostas pelos celulares. O gabarito **nunca** é enviado aos alunos antes da revelação.
+- **Quiz no seu ritmo**: cada aluno avança sozinho; o professor acompanha o progresso e encerra para todos.
+- **Buzzer no celular** (método C): a largada é marcada num horário do relógio do professor e cada celular converte para o seu, então todos veem o sinal juntos. Margem de empate pela rede: 30 ms.
+- **Lobby**: nomes com gerador de apelidos e filtro de nomes ofensivos, sinal de conexão de cada um (verde, amarelo ou vermelho), trancar a sala e remover alunos.
+- **Reconexão**: o celular que cai volta sozinho com o mesmo `clientId` (guardado no `sessionStorage`), recebe o estado completo e não ganha pontos em dobro.
+- **Relógio sincronizado**: cerca de 8 pings, com a mediana das amostras de menor tempo de ida e volta; ressincroniza a cada 20 s.
+
+### Três jeitos de conectar
+
+| Modo | Precisa de internet? | Como |
+|---|---|---|
+| **Online** (padrão) | Só para conectar | PeerJS: a sinalização vai pela internet e o jogo passa direto entre os aparelhos. |
+| **Sem internet (QR)** | Não | WebRTC com sinalização manual: o aluno lê o QR de convite do professor e mostra um QR de resposta. Bom para poucos aparelhos. |
+| **Servidor local** | Não | No PC do professor: dois cliques em `iniciar-sala-local.bat` (ou `node server/valendo-server.js`). Os alunos abrem `http://IP-do-PC:8080/#/entrar?modo=local`. Para turma grande. |
+
+**Limitações:** alguns roteadores de escola bloqueiam a conversa entre aparelhos (isolamento de clientes); nesse caso, use o **ponto de acesso do celular do professor**. Pela rede, a ordem é justa, mas não física e perfeita. Num aparelho só, quem tem o aparelho tem o controle.
 
 Precisão: os toques usam `pointerdown`/`pointerup` com `event.timeStamp`, multitoque por `pointerId`, e a largada é marcada no frame do `requestAnimationFrame` em que o sinal aparece, com o som tocando no mesmo instante (WebAudio).
 
@@ -104,7 +125,10 @@ js/app.js             boot + router + tema
 js/i18n/              textos da interface (pt-BR)
 js/ui/components/     botão, cartão-pasta, modal, toast, post-it, switch, stepper, mascote
 js/ui/screens/        início, sobre, vitrine, 404
-js/core/              lógica pura, sem DOM e sem rede: buzzer, placar, sorteio, cronômetro, equipes,
+js/net/               transporte das salas: protocol, transport, peer-online, peer-qr, local-server
+server/               valendo-server.js (servidor local opcional, Node, sem dependências)
+vendor/               peerjs, qrcode-generator e jsQR (locais, com as licenças)
+js/core/              lógica pura, sem DOM e sem rede: buzzer, placar, sorteio, cronômetro, equipes, sala, ritmo,
                       atividades (schema + migração), arquivos (colar/CSV/JSON), quiz, passa-repassa
 js/core/questions/    um arquivo por tipo de questão (plugin)
 js/audio/             sons gerados com WebAudio
@@ -113,7 +137,7 @@ assets/               ícones e fontes locais
 tests/                testes com node --test
 ```
 
-Rotas: `#/` (início), `#/buzzer` (ajustes), `#/buzzer/jogar` (jogo; `?relampago` usa o padrão), `#/placar`, `#/sorteio`, `#/cronometro`, `#/equipes`, `#/turmas`, `#/ferramentas`, `#/atividades` (biblioteca), `#/atividades/editar?id=…`, `#/atividades/testar?id=…`, `#/quiz`, `#/passa`, `#/jogar?id=…`, `#/sobre` (Sobre e créditos), `#/vitrine` (todos os componentes).
+Rotas: `#/` (início), `#/buzzer` (ajustes), `#/buzzer/jogar` (jogo; `?relampago` usa o padrão), `#/placar`, `#/sorteio`, `#/cronometro`, `#/equipes`, `#/turmas`, `#/ferramentas`, `#/atividades` (biblioteca), `#/atividades/editar?id=…`, `#/atividades/testar?id=…`, `#/quiz`, `#/passa`, `#/jogar?id=…`, `#/sala`, `#/entrar`, `#/sobre` (Sobre e créditos), `#/vitrine` (todos os componentes).
 
 ## Design system: "caderno neo-brutalista"
 
@@ -130,6 +154,8 @@ Sem contas, sem analytics, sem coleta. Tudo fica no aparelho.
 Criado por **Francisco Audir** — Instagram [@filho.af](https://instagram.com/filho.af).
 
 Repositório: <https://github.com/Francisco12-cpu/valendo>
+
+Bibliotecas em `vendor/`: [PeerJS](https://peerjs.com) (MIT), [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) (MIT) e [jsQR](https://github.com/cozmo/jsQR) (Apache-2.0).
 
 Fontes [Caveat](https://fonts.google.com/specimen/Caveat) e [Space Grotesk](https://fonts.google.com/specimen/Space+Grotesk), sob a SIL Open Font License (cópias das licenças em `assets/fonts/`).
 

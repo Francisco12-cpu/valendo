@@ -34,6 +34,7 @@ export const icones = {
   baixo: base('<path d="M12 20l12 12 12-12"/>'),
   copiar: base('<rect x="15" y="15" width="25" height="27" rx="3"/><path d="M33 15V9a3 3 0 0 0-3-3H11a3 3 0 0 0-3 3v21a3 3 0 0 0 3 3h4"/>'),
   lixo: base('<path d="M8 12h32M19 12V7h10v5M12 12l2 29h20l2-29M20 19v15M28 19v15"/>'),
+  celular: base('<rect x="13" y="4" width="22" height="40" rx="4"/><path d="M21 38h6M8 16c-3 4-3 12 0 16M40 16c3 4 3 12 0 16"/>'),
   raio: base('<path d="M27 4L10 27h12l-3 17 19-25H26z" fill="currentColor"/>'),
   seta: base('<path d="M4 8c20-2 42 6 52 30"/><path d="M43 34l13 5 4-13"/>', '0 0 64 48'),
 };

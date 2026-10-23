@@ -25,6 +25,8 @@ const ROTAS = {
   '/jogar': () => import('./ui/screens/jogar.js'),
   '/quiz': () => import('./ui/screens/jogos.js'),
   '/passa': () => import('./ui/screens/jogos.js'),
+  '/sala': () => import('./ui/screens/sala.js'),
+  '/entrar': () => import('./ui/screens/entrar.js'),
 };
 const naoEncontrado = () => import('./ui/screens/nao-encontrado.js');
 

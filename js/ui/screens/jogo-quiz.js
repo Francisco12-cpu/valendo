@@ -28,7 +28,11 @@ function respostaPara(q, certo) {
   return null;
 }
 
-export function jogarQuiz(alvo, atividade, participantes) {
+// opcoes.remoto: respostas chegam dos celulares (Fase 5). aoMudar(p) avisa a sala a cada mudança;
+// aoPronto({ executar, partida }) entrega os comandos para quem controla de fora.
+export function jogarQuiz(alvo, atividade, participantes, opcoes = {}) {
+  const remoto = Boolean(opcoes.remoto);
+  const sairHref = opcoes.sairHref ?? '#/atividades';
   let p = Q.criarPartida(atividade, participantes);
   let relogio = null;
   let ultimoSegundo = null;
@@ -44,8 +48,9 @@ export function jogarQuiz(alvo, atividade, participantes) {
   const topo = h(
     'div',
     { class: 'palco__topo' },
-    h('a', { class: 'botao botao--icone', href: '#/atividades', 'aria-label': t('jogar.sair'), title: t('jogar.sair') }, svg(icones.fechar)),
+    h('a', { class: 'botao botao--icone', href: sairHref, 'aria-label': t('jogar.sair'), title: t('jogar.sair') }, svg(icones.fechar)),
     h('span', { class: 'palco__titulo manuscrito' }, atividade.titulo),
+    opcoes.extraTopo ?? null,
     progresso,
     telaCheia
   );
@@ -58,7 +63,7 @@ export function jogarQuiz(alvo, atividade, participantes) {
     desbloquear();
     const antes = p;
     if (comando === 'proxima') p = Q.proximaPergunta(p, agora());
-    else if (comando === 'responder') p = Q.responder(p, dados.pid, dados.resposta, agora());
+    else if (comando === 'responder') p = Q.responder(p, dados.pid, dados.resposta, dados.t ?? agora());
     else if (comando === 'encerrar') p = Q.encerrarPergunta(p);
     else if (comando === 'ranking') p = Q.mostrarRanking(p);
     if (p === antes) return;
@@ -73,6 +78,7 @@ export function jogarQuiz(alvo, atividade, participantes) {
       if (p.fase === Q.FASES.FIM) sons.vitoria();
     }
     desenhar(antes.fase !== p.fase || antes.indice !== p.indice);
+    opcoes.aoMudar?.(p);
   }
 
   // Avança conforme a tela atual (Espaço / botão principal).
@@ -188,6 +194,14 @@ export function jogarQuiz(alvo, atividade, participantes) {
 
   function montarPainel(q) {
     const nomeTipo = q.tipo;
+    if (remoto) {
+      painel.replaceChildren(
+        h('h2', { class: 'painel__titulo' }, t('sala.respostasCelulares')),
+        h('ul', { class: 'painel__lista', role: 'list' }, p.participantes.map((x) => h('li', { class: 'painel__linha', 'data-pid': x.id, 'data-tipo': nomeTipo }, h('span', { class: 'painel__nome', style: { '--cor': x.cor } }, x.nome), h('span', { class: 'painel__ok', 'aria-hidden': 'true' }))))
+      );
+      atualizarPainel();
+      return;
+    }
     const porOpcao = (q.tipo === 'multipla' && !variasCorretas(q)) || q.tipo === 'enquete' || q.tipo === 'vf';
     painel.replaceChildren(
       h('h2', { class: 'painel__titulo' }, t('jogar.registrar')),
@@ -354,9 +368,10 @@ export function jogarQuiz(alvo, atividade, participantes) {
               p = Q.criarPartida(atividade, participantes);
               salvo = false;
               desenhar(true);
+              opcoes.aoMudar?.(p);
             },
           }),
-          h('a', { class: 'botao', href: '#/atividades' }, t('editor.voltar'))
+          h('a', { class: 'botao', href: sairHref }, t('editor.voltar'))
         )
       )
     );
@@ -380,6 +395,7 @@ export function jogarQuiz(alvo, atividade, participantes) {
   document.addEventListener('keydown', teclado);
 
   desenhar(true);
+  opcoes.aoPronto?.({ executar, partida: () => p });
 
   return () => {
     clearInterval(relogio);

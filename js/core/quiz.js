@@ -154,3 +154,48 @@ export function resumo(p, atividade, { data = new Date().toISOString() } = {}) {
     })),
   };
 }
+
+// ---------- O que cada aluno recebe (Fase 5) ----------
+// Regra: o gabarito NUNCA sai do host antes da revelação. Antes dela, a pergunta vai sem
+// "correta", "aceitas", "valor" nem "tolerancia" (só o que aparece na tela do aluno).
+export function perguntaSemGabarito(q) {
+  if (!q) return null;
+  const base = { id: q.id, tipo: q.tipo, enunciado: q.enunciado, midia: q.midia ?? null, tempo: q.tempo, multiplicador: multiplicador(q) };
+  if (Array.isArray(q.opcoes)) {
+    base.opcoes = q.opcoes.map((o) => ({ id: o.id, texto: o.texto }));
+    if (q.tipo === 'multipla') base.varias = q.opcoes.filter((o) => o.correta).length > 1;
+  }
+  if (q.tipo === 'numerica') base.unidade = q.unidade ?? '';
+  if (q.tipo === 'slide') base.texto = q.texto ?? '';
+  return base;
+}
+
+function gabaritoPublico(q) {
+  if (q.tipo === 'multipla') return q.opcoes.filter((o) => o.correta).map((o) => o.id);
+  if (q.tipo === 'vf') return q.correta;
+  if (q.tipo === 'curta') return q.aceitas.filter(Boolean);
+  if (q.tipo === 'numerica') return { valor: q.valor, unidade: q.unidade ?? '' };
+  return null;
+}
+
+export function paraAluno(p, pid, t) {
+  const q = perguntaAtual(p);
+  const minha = q ? p.respostas[q.id]?.[pid] : null;
+  const pos = posicoes(p);
+  const estado = { tipo: 'quiz', fase: p.fase, indice: p.indice, total: p.perguntas.length, meusPontos: p.pontos[pid] ?? 0, posicao: pos[pid] ?? null, participantes: p.participantes.length };
+  if (p.fase === FASES.PERGUNTA) {
+    const limite = prazo(p);
+    estado.pergunta = perguntaSemGabarito(q);
+    estado.restaMs = limite === null ? null : Math.max(0, limite - t);
+    estado.respondeu = Boolean(minha);
+  } else if (p.fase === FASES.REVELACAO || p.fase === FASES.RANKING) {
+    estado.pergunta = perguntaSemGabarito(q);
+    estado.gabarito = gabaritoPublico(q);
+    estado.explicacao = p.regras.mostrarExplicacao ? q.explicacao : '';
+    estado.minha = minha ? { correta: minha.correta ?? null, pontos: minha.pontos ?? 0, resposta: minha.resposta } : null;
+  }
+  if (p.fase === FASES.RANKING || p.fase === FASES.FIM) {
+    estado.ranking = p.ranking === 'oculto' ? null : ranking(p).slice(0, p.ranking === 'top5' ? 5 : undefined).map(({ id, nome, pontos, posicao }) => ({ id, nome, pontos, posicao }));
+  }
+  return estado;
+}

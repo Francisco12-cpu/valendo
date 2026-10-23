@@ -105,6 +105,13 @@ export function render(alvo) {
     ),
     h(
       'section',
+      { class: 'secao atalho atalho--sala cartao', 'aria-labelledby': 'inicio-sala' },
+      h('div', { class: 'atalho__icone', 'aria-hidden': 'true' }, svg(icones.celular)),
+      h('div', { class: 'pilha pilha--justa' }, h('h2', { id: 'inicio-sala', class: 'secao__titulo' }, t('inicio.sala')), h('p', { class: 'texto-suave' }, t('inicio.salaDesc'))),
+      h('div', { class: 'linha' }, botaoLink('#/sala', 'botao--primario', 'raio', t('inicio.salaAbrir')), botaoLink('#/entrar', '', null, t('inicio.salaEntrar')))
+    ),
+    h(
+      'section',
       { class: 'secao atalho cartao', 'aria-labelledby': 'inicio-banco' },
       h('div', { class: 'atalho__icone', 'aria-hidden': 'true' }, svg(icones.provas)),
       h('div', { class: 'pilha pilha--justa' }, h('h2', { id: 'inicio-banco', class: 'secao__titulo' }, t('inicio.banco')), h('p', { class: 'texto-suave' }, t('inicio.bancoDesc'))),

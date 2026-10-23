@@ -3192,3 +3192,512 @@ body.modo-palco .conteudo {
 .pr-julgar {
   justify-content: center;
 }
+
+/* =========================================================
+   Fase 5 — salas conectadas
+   ========================================================= */
+.atalho--sala {
+  background: color-mix(in srgb, var(--laranja) 10%, var(--superficie));
+}
+
+.atalho--sala .atalho__icone {
+  background: var(--laranja);
+  color: var(--tinta-fixa);
+}
+
+.atalho > .linha {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 768px) {
+  .atalho > .linha {
+    grid-column: auto;
+  }
+}
+
+/* QR */
+.qr {
+  width: var(--tamanho, 16rem);
+  max-width: 100%;
+  padding: var(--esp-2);
+  background: #FFFFFF;
+  border: var(--borda);
+  border-color: #141414;
+  border-radius: 12px;
+  box-shadow: var(--sombra);
+}
+
+.qr svg {
+  width: 100%;
+  height: auto;
+}
+
+.leitor__moldura {
+  position: relative;
+  width: min(100%, 24rem);
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #141414;
+  border: var(--borda);
+  border-radius: var(--raio);
+}
+
+.leitor__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.leitor__moldura::after {
+  content: "";
+  position: absolute;
+  inset: 15%;
+  border: 4px dashed rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+}
+
+.leitor__colar summary,
+.avisos-rede summary {
+  min-height: var(--alvo);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.avisos-rede ul {
+  display: grid;
+  gap: var(--esp-2);
+  padding-left: 1.2rem;
+  font-size: var(--fs-p);
+}
+
+/* Lobby do professor */
+.sala-lobby {
+  display: grid;
+  gap: var(--esp-5);
+  align-items: start;
+}
+
+.sala-entrada {
+  display: grid;
+  justify-items: center;
+  gap: var(--esp-4);
+  text-align: center;
+}
+
+.sala-link {
+  max-width: none;
+  font-weight: 700;
+  font-size: var(--fs-m);
+  overflow-wrap: anywhere;
+}
+
+.sala-codigo {
+  max-width: 100%;
+  font-size: clamp(2.5rem, 1.6rem + 3.2vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  overflow-wrap: anywhere;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.sala-contagem {
+  font-size: var(--fs-m);
+  padding: 0.2rem 0.9rem;
+}
+
+.sala-alunos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+  gap: var(--esp-2);
+  padding: 0;
+  list-style: none;
+}
+
+.sala-aluno {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-2);
+  padding-left: var(--esp-3);
+  background: var(--papel);
+  border: 2px solid var(--tinta);
+  border-radius: 999px;
+}
+
+.sala-aluno__sinal {
+  flex: none;
+  width: 0.9rem;
+  height: 0.9rem;
+  border: 2px solid var(--tinta);
+  border-radius: 50%;
+  background: var(--verde);
+}
+
+.sala-aluno[data-sinal="amarelo"] .sala-aluno__sinal {
+  background: var(--amarelo);
+  border-radius: 2px; /* forma diferente: não depende só da cor */
+}
+
+.sala-aluno[data-sinal="vermelho"] .sala-aluno__sinal {
+  background: var(--perigo);
+  border-radius: 0;
+  transform: rotate(45deg);
+}
+
+.sala-aluno[data-sinal="vermelho"] {
+  border-style: dashed;
+  color: var(--tinta-suave);
+}
+
+.sala-aluno__nome {
+  flex: 1;
+  min-width: 0;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sala-aluno__rtt {
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.sala-aluno .botao {
+  min-width: 44px;
+  width: 44px;
+  min-height: 44px;
+}
+
+.sala-topo {
+  font-weight: 700;
+  font-size: var(--fs-base);
+}
+
+@media (min-width: 900px) {
+  .sala-lobby {
+    grid-template-columns: minmax(18rem, 1fr) 2fr;
+  }
+}
+
+/* Ritmo (professor) */
+.ritmo-lista {
+  display: grid;
+  gap: var(--esp-2);
+  padding: 0;
+  list-style: none;
+}
+
+.ritmo-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--esp-3);
+  min-height: 3rem;
+  padding: var(--esp-2) var(--esp-4);
+  background: var(--superficie);
+  border: 2.5px solid var(--tinta);
+  border-radius: 10px;
+  overflow: hidden;
+  font-weight: 700;
+}
+
+.ritmo-item__barra {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--valor) * 100%);
+  background: color-mix(in srgb, var(--verde) 35%, transparent);
+  transition: width 400ms ease-out;
+}
+
+.ritmo-item > span:not(.ritmo-item__barra) {
+  position: relative;
+}
+
+.ritmo-item__pts,
+.ritmo-item__num {
+  font-variant-numeric: tabular-nums;
+}
+
+.ritmo-item[data-terminou="true"] {
+  border-color: var(--sucesso);
+}
+
+/* Buzzer C (professor) */
+.sala-buzzer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: var(--esp-3);
+  padding: 0;
+  list-style: none;
+}
+
+.sala-buzzer__jogador {
+  display: grid;
+  justify-items: center;
+  gap: var(--esp-1);
+  padding: var(--esp-4);
+  background: color-mix(in srgb, var(--cor) 20%, var(--superficie));
+  border: var(--borda);
+  border-top: 12px solid var(--cor);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  text-align: center;
+}
+
+.sala-buzzer__nome {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.sala-buzzer__estado {
+  font-weight: 700;
+  font-size: var(--fs-m);
+}
+
+.sala-buzzer__jogador[data-modo="venceu"] {
+  background: var(--cor);
+  color: var(--tinta-fixa);
+  outline: 5px solid var(--tinta);
+}
+
+.sala-buzzer__jogador[data-modo="queimou"] {
+  background: var(--perigo);
+  color: var(--sobre-perigo);
+}
+
+.sala-buzzer__jogador[data-modo="perdeu"] {
+  opacity: 0.7;
+}
+
+.sala-buzzer__centro {
+  justify-items: center;
+  margin-top: var(--esp-5);
+  text-align: center;
+}
+
+.sala-buzzer__juiz {
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+}
+
+/* ---------- Tela do aluno (celular) ---------- */
+body.modo-aluno .cabecalho,
+body.modo-aluno .rodape {
+  display: none;
+}
+
+body.modo-aluno .conteudo {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-top: var(--esp-2);
+}
+
+.aluno__cabeca {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-3);
+  margin-bottom: var(--esp-3);
+}
+
+.aluno__status {
+  font-size: var(--fs-p);
+  font-weight: 700;
+  color: var(--tinta-suave);
+}
+
+.aluno {
+  display: grid;
+  gap: var(--esp-4);
+  max-width: 34rem;
+  margin: 0 auto;
+}
+
+.aluno__topo {
+  justify-items: center;
+  text-align: center;
+}
+
+.aluno__codigo {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.aluno__aguarde,
+.aluno__lobby,
+.aluno__enviado,
+.aluno__veredito,
+.aluno__fim,
+.aluno__qr {
+  display: grid;
+  justify-items: center;
+  gap: var(--esp-3);
+  padding: var(--esp-6) var(--esp-3);
+  text-align: center;
+  font-size: var(--fs-m);
+}
+
+.aluno__barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-2);
+}
+
+.aluno__tempo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.aluno__enunciado {
+  max-width: none;
+  font-size: clamp(1.25rem, 1rem + 1.5vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.aluno__opcoes {
+  display: grid;
+  gap: var(--esp-3);
+}
+
+.aluno__opcao {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-3);
+  min-height: 4.5rem;
+  padding: var(--esp-3) var(--esp-4);
+  background: var(--cor);
+  color: var(--tinta-fixa);
+  border: 2.5px solid var(--tinta-fixa);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  font-size: var(--fs-m);
+  font-weight: 700;
+  text-align: left;
+  touch-action: manipulation;
+}
+
+.aluno__opcao:active,
+.aluno__opcao[aria-pressed="true"] {
+  transform: translate(var(--deslize), var(--deslize));
+  box-shadow: var(--sombra-press);
+}
+
+.aluno__opcao[aria-pressed="true"] {
+  outline: 4px solid var(--tinta);
+  outline-offset: 2px;
+}
+
+.aluno__campo {
+  font-size: var(--fs-g);
+}
+
+.aluno__grande {
+  font-size: clamp(2rem, 1.5rem + 4vw, 3.5rem);
+  line-height: 1.05;
+}
+
+.aluno__pts {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.aluno__veredito[data-certo="true"] {
+  background: color-mix(in srgb, var(--verde) 25%, var(--superficie));
+  border: var(--borda);
+  border-radius: var(--raio);
+}
+
+.aluno__veredito[data-certo="false"] {
+  background: color-mix(in srgb, var(--rosa) 25%, var(--superficie));
+  border: var(--borda);
+  border-radius: var(--raio);
+}
+
+.aluno__retorno {
+  padding: var(--esp-2) var(--esp-3);
+  border: 2.5px solid var(--tinta);
+  border-radius: 10px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.aluno__retorno[data-certo="true"] {
+  background: color-mix(in srgb, var(--verde) 30%, var(--superficie));
+}
+
+.aluno__retorno[data-certo="false"] {
+  background: color-mix(in srgb, var(--rosa) 30%, var(--superficie));
+}
+
+.aluno__nome {
+  font-size: 2.2rem;
+  text-align: center;
+}
+
+.aluno__buzzer {
+  display: grid;
+  place-items: center;
+  width: min(80vw, 22rem);
+  aspect-ratio: 1;
+  justify-self: center;
+  background: var(--superficie);
+  color: var(--tinta);
+  border: 6px solid var(--tinta);
+  border-radius: 50%;
+  box-shadow: 8px 8px 0 var(--cor-sombra);
+  font-size: clamp(2rem, 1.5rem + 5vw, 3.5rem);
+  font-weight: 700;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.aluno__buzzer:active {
+  transform: translate(4px, 4px);
+  box-shadow: 2px 2px 0 var(--cor-sombra);
+}
+
+.aluno__buzzer[data-estado="espera"] {
+  background: var(--linha-caderno);
+}
+
+.aluno__buzzer[data-estado="valendo"] {
+  background: var(--amarelo);
+  color: var(--tinta-fixa);
+  border-color: var(--tinta-fixa);
+}
+
+.aluno__buzzer[data-estado="agiu"] {
+  background: var(--ciano);
+  color: var(--tinta-fixa);
+}
+
+.aluno__buzzer[data-estado="venceu"] {
+  background: var(--verde);
+  color: var(--tinta-fixa);
+}
+
+.aluno__buzzer[data-estado="queimou"] {
+  background: var(--perigo);
+  color: var(--sobre-perigo);
+}
+
+.aluno__buzzer:disabled {
+  cursor: default;
+}
+
+.aluno__buzzer-texto {
+  padding: var(--esp-3);
+  text-align: center;
+}
